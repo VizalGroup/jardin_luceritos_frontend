@@ -28,6 +28,52 @@ export default function SystemNotes() {
             <h2 className="system-notes-title">Registro de Actualizaciones</h2>
             <ul className="notes-timeline">
               <li className="timeline-item">
+                <span className="timeline-date">9 de Febrero de 2026</span>
+                <ul className="timeline-updates">
+                  <li className="update-item">
+                    <strong>Modulo de Pizarra:</strong> Nueva pizarra de
+                    comunicaciones para ver avisos y novedades del jardin
+                  </li>
+                  <li className="update-item">
+                    <strong>Modulo de Comunicaciones:</strong> Gestion de
+                    comunicados con historial, filtros y acciones
+                  </li>
+                  <li className="update-item">
+                    <strong>Sistema de Chat:</strong> Conversaciones entre
+                    padres/tutores y personal con vista de mensajes y gestion
+                  </li>
+                  <li className="update-item">
+                    <strong>Seccion de Contacto:</strong> Se agrego la segunda
+                    sede Docta con direccion, horario y mapa
+                  </li>
+                </ul>
+              </li>
+              <li className="timeline-item">
+                <span className="timeline-date">27 de Enero de 2025</span>
+                <ul className="timeline-updates">
+                  <li className="update-item">
+                    <strong>Atributos de Ubicación:</strong> Se agregaron los
+                    campos "Sala" y "Sede" al módulo de infantes para registrar
+                    la ubicación específica de cada niño dentro del jardín
+                  </li>
+
+                  <li className="update-item">
+                    <strong>Listado PDF con Filtros:</strong> Mejora en la
+                    exportación de PDF permitiendo filtrar y generar listados
+                    específicos por Sede y/o Sala seleccionada
+                  </li>
+                  <li className="update-item">
+                    <strong>Visualización de Ubicación:</strong> Las tablas de
+                    infantes ahora muestran la sede y sala asignada a cada niño
+                  </li>
+                  <li className="update-item">
+                    <strong>Selector de Filtros Interactivo:</strong> Modal
+                    intuitivo para seleccionar la combinación de Sede y Sala
+                    antes de generar el PDF
+                  </li>
+                </ul>
+              </li>
+              <li className="timeline-item">
                 <span className="timeline-date">26 de Enero de 2025</span>
                 <ul className="timeline-updates">
                   <li className="update-item">

@@ -11,6 +11,8 @@ import {
   FaCalendarAlt,
   FaClock,
   FaDoorOpen,
+  FaSchool,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 import { RiDoorClosedLine } from "react-icons/ri";
 import { selectTariffs } from "../../../redux/selectors";
@@ -261,25 +263,62 @@ export default function AddInfant() {
               </Form.Group>
             </Row>
 
-            <Form.Group className="mb-3" controlId="id_tariff">
+            <Row>
+              <Form.Group as={Col} md="6" className="mb-3" controlId="id_tariff">
+                <Form.Label>
+                  <FaAddressCard /> Tarifa
+                </Form.Label>
+                <Form.Control
+                  as="select"
+                  name="id_tariff"
+                  value={formData.id_tariff}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Seleccione una tarifa</option>
+               
+                  {tariffs.map((tariff) => (
+                    <option key={tariff.id} value={tariff.id}>
+                      {formatHours(tariff.number_of_hours)} -{" "}
+                      {formatCurrency(tariff.price)}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+
+              <Form.Group as={Col} md="6" className="mb-3" controlId="room">
+                <Form.Label>
+                  <FaSchool /> Sala
+                </Form.Label>
+                <Form.Control
+                  as="select"
+                  name="room"
+                  value={formData.room}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="0">Desconocida</option>
+                  <option value="1">Semillitas (bebés)</option>
+                  <option value="2">Primeros pasos (1 año)</option>
+                  <option value="3">Exploradores (2 años)</option>
+                  <option value="4">Pequeños expertos (3 años)</option>
+                </Form.Control>
+              </Form.Group>
+            </Row>
+
+            <Form.Group className="mb-3" controlId="location">
               <Form.Label>
-                <FaAddressCard /> Tarifa
+                <FaMapMarkerAlt /> Sede
               </Form.Label>
               <Form.Control
                 as="select"
-                name="id_tariff"
-                value={formData.id_tariff}
+                name="location"
+                value={formData.location}
                 onChange={handleInputChange}
                 required
               >
-                <option value="">Seleccione una tarifa</option>
-               
-                {tariffs.map((tariff) => (
-                  <option key={tariff.id} value={tariff.id}>
-                    {formatHours(tariff.number_of_hours)} -{" "}
-                    {formatCurrency(tariff.price)}
-                  </option>
-                ))}
+                <option value="0">Sede Laplace</option>
+                <option value="1">Sede Docta</option>
               </Form.Control>
             </Form.Group>
 

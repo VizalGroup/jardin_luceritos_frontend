@@ -18,6 +18,8 @@ import {
   FaUser,
   FaUserEdit,
   FaDoorOpen,
+  FaSchool,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 import { RiDoorClosedLine } from "react-icons/ri";
 import { selectTariffs } from "../../../redux/selectors";
@@ -26,6 +28,7 @@ import { formatCurrency, formatHours, getCurrentDateTime } from "../../../utils"
 export default function EditInfant({ infant }) {
   const dispatch = useDispatch();
   const authenticatedUser = useSelector((state) => state.authenticatedUser);
+  
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     ...infant,
@@ -241,6 +244,43 @@ export default function EditInfant({ infant }) {
                   <option value="1">Inscripto</option>
                   <option value="2">Pendiente de validar</option>
                   <option value="0">Inactivo y/o Egresado</option>
+                </Form.Control>
+              </Form.Group>
+            </Row>
+
+            <Row>
+              <Form.Group as={Col} md="6" className="mb-3" controlId="room">
+                <Form.Label>
+                  <FaSchool /> Sala
+                </Form.Label>
+                <Form.Control
+                  as="select"
+                  name="room"
+                  value={formData.room || 0}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="0">Desconocida</option>
+                  <option value="1">Semillitas (bebés)</option>
+                  <option value="2">Primeros pasos (1 año)</option>
+                  <option value="3">Exploradores (2 años)</option>
+                  <option value="4">Pequeños expertos (3 años)</option>
+                </Form.Control>
+              </Form.Group>
+
+              <Form.Group as={Col} md="6" className="mb-3" controlId="location">
+                <Form.Label>
+                  <FaMapMarkerAlt /> Sede
+                </Form.Label>
+                <Form.Control
+                  as="select"
+                  name="location"
+                  value={formData.location || 0}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="0">Sede Laplace</option>
+                  <option value="1">Sede Docta</option>
                 </Form.Control>
               </Form.Group>
             </Row>

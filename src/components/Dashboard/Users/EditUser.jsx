@@ -79,7 +79,7 @@ export default function EditUser({ user }) {
       <Button
         variant="warning"
         size="sm"
-        style={{ margin: "2px" }}
+        className="button-custom"
         onClick={handleShow}
         title="Editar usuario"
       >
@@ -203,9 +203,10 @@ export default function EditUser({ user }) {
                 disabled={isSubmitting}
               >
                 <option value="0">Programador</option>
-                <option value="1">Director/a</option>
+                <option value="1">Administrador</option>
                 <option value="2">Maestra / Auxiliar</option>
                 <option value="3">Madre/Padre o Tutor</option>
+                <option value="4">Dirección</option>
               </Form.Control>
             </Form.Group>
 

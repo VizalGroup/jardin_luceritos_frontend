@@ -9,6 +9,8 @@ import {
   FaUserCog,
   FaDollarSign,
   FaChild,
+  FaEnvelope,
+  FaHistory,
 } from "react-icons/fa";
 
 export default function NavBarDB() {
@@ -23,6 +25,9 @@ export default function NavBarDB() {
   // Verificar si el usuario puede gestionar el sistema
   const canAccessManagement =
     authenticatedUser && canManageSystem(authenticatedUser.user_role);
+
+  // Verificar si es padre/madre/tutor
+  const isParent = authenticatedUser?.user_role === 3;
 
   return (
     <nav className="navbar navbar-dark navbar-custom fixed-top">
@@ -75,6 +80,20 @@ export default function NavBarDB() {
                 </a>
               </li>
 
+              {/* Historial de comunicaciones solo para padres */}
+              {isParent && (
+                <>
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
+                  <li className="nav-item">
+                    <a className="nav-link" href="/autogestion/historial-comunicaciones">
+                      <FaHistory /> Historial de Comunicaciones
+                    </a>
+                  </li>
+                </>
+              )}
+
               {/* Solo mostrar estas opciones si NO es cliente (rol 3) */}
               {canAccessManagement && (
                 <>
@@ -82,6 +101,14 @@ export default function NavBarDB() {
                     <hr className="dropdown-divider" />
                   </li>
 
+                  <li className="nav-item">
+                    <a className="nav-link" href="/autogestion/comunicaciones">
+                      <FaEnvelope /> Comunicaciones
+                    </a>
+                  </li>
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
                   <li className="nav-item">
                     <a className="nav-link" href="/autogestion/infantes">
                       <FaChild /> Infantes

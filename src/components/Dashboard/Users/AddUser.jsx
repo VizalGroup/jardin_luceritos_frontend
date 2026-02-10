@@ -263,9 +263,10 @@ export default function AddUser() {
               >
                 <option value="">Seleccionar</option>
                 <option value="0">Programador</option>
-                <option value="1">Director/a</option>
+                <option value="1">Administrador</option>
                 <option value="2">Maestra / Auxiliar</option>
                 <option value="3">Madre/Padre o Tutor</option>
+                <option value="4">Dirección</option>
               </Form.Control>
             </Form.Group>
             <br />

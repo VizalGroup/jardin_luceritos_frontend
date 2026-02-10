@@ -13,7 +13,7 @@ export default function Rooms() {
           <div className="room-icon">
             <GiDeer />
           </div>
-          <h3 className="room-name">SEMILLAS</h3>
+          <h3 className="room-name">SEMILLITAS</h3>
           <p className="room-description">
             En sala semillas acompañamos los primeros vínculos y descubrimientos de la vida fuera del hogar. Es un espacio pensado para ofrecer contención, ternura y seguridad.
           </p>
@@ -23,7 +23,7 @@ export default function Rooms() {
           <div className="room-icon">
             <LuBird />
           </div>
-          <h3 className="room-name">AVENTUREROS</h3>
+          <h3 className="room-name">PRIMEROS PASOS Y EXPLORADORES</h3>
           <p className="room-description">
             Desde los 15 a 24 meses recibimos a niño que exploran el mundo con curiosidad y movimiento. En esta etapa la autonomía y el juego libre se vuelven protagonistas.
           </p>

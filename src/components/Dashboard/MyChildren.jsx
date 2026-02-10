@@ -10,10 +10,12 @@ import {
   FaHourglassHalf, 
   FaTimesCircle,
   FaCalendarAlt,
-  FaDollarSign 
+  FaDollarSign,
+  FaSchool,
+  FaMapMarkerAlt
 } from "react-icons/fa";
 import { GetInfants, GetFamilyRelationships } from "../../redux/actions";
-import { capitalizeName, formatDate, calculateAge, formatDNI, formatCurrency } from "../../utils";
+import { capitalizeName, formatDate, calculateAge, formatDNI, formatCurrency, getRoomName, getLocationName } from "../../utils";
 
 export default function MyChildren() {
   const dispatch = useDispatch();
@@ -48,8 +50,8 @@ export default function MyChildren() {
       case 2:
         return (
           <div className="d-flex align-items-center gap-1">
-            <FaHourglassHalf className="text-warning" size={14} />
-            <small className="text-warning fw-bold">Pendiente</small>
+            <FaHourglassHalf className="text-dark" size={14} />
+            <small className="text-dark fw-bold">Pendiente</small>
           </div>
         );
       case 0:
@@ -160,6 +162,23 @@ export default function MyChildren() {
                   <small className="ms-2">{formatDate(child.birthdate)}</small>
                 </div>
 
+                {/* Sala y Sede */}
+                <div className="col-6">
+                  <div className="d-flex align-items-center mb-1">
+                    <FaSchool style={{ color: "#213472" }} className="me-1" size={12} />
+                    <small className="text-muted fw-semibold">Sala</small>
+                  </div>
+                  <small className="ms-2">{getRoomName(child.room)}</small>
+                </div>
+
+                <div className="col-6">
+                  <div className="d-flex align-items-center mb-1">
+                    <FaMapMarkerAlt style={{ color: "#213472" }} className="me-1" size={12} />
+                    <small className="text-muted fw-semibold">Sede</small>
+                  </div>
+                  <small className="ms-2">{getLocationName(child.location)}</small>
+                </div>
+
                 {/* Información de Tarifa */}
                 <div className="col-12">
                   <div style={{ backgroundColor: "#FFF5ED" }} className="rounded p-2 mt-2">
@@ -212,15 +231,15 @@ export default function MyChildren() {
                   <div className="col-12">
                     <div
                       style={{
-                        backgroundColor: "rgba(255, 193, 7, 0.1)",
-                        fontSize: "11px",
-                        border: "1px solid #ffc107"
+                        backgroundColor: "#FFF5ED",
+                        fontSize: "15px",
+                        border: "1px solid #FFF5ED"
                       }}
                       className="rounded p-2 mt-2"
                     >
                       <div className="d-flex align-items-center gap-2">
-                        <FaHourglassHalf className="text-warning" size={12} />
-                        <small className="text-warning fw-semibold">
+                        
+                        <small className="text-dark fw-semibold">
                           La información está siendo validada por dirección.
                         </small>
                       </div>

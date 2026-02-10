@@ -11,6 +11,14 @@ const initialState = {
   infant_detail: [],
   family_relationships: [],
   family_relationship_detail: [],
+  communications: [],
+  communicationDetail: [],
+  communication_recipients: [],
+  communication_recipientDetail: [],
+  conversations: [],
+  conversationDetail: [],
+  chat_messages: [],
+  chat_messageDetail: [],
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -165,7 +173,140 @@ const rootReducer = (state = initialState, action) => {
           (item) => item.id !== action.payload,
         ),
       };
-      
+
+    case "GET_COMMUNICATIONS":
+      return {
+        ...state,
+        communications: action.payload,
+      };
+
+    case "GET_ID_COMMUNICATION":
+      return {
+        ...state,
+        communicationDetail: action.payload,
+      };
+
+    case "POST_COMMUNICATION":
+      return {
+        ...state,
+      };
+
+    case "UPDATE_COMMUNICATION":
+      return {
+        ...state,
+        communications: state.communications.map((item) => {
+          return item.id === action.payload.id ? action.payload : item;
+        }),
+      };
+
+    case "DELETE_COMMUNICATION":
+      return {
+        ...state,
+        communications: state.communications.filter(
+          (item) => item.id !== action.payload,
+        ),
+      };
+
+    case "GET_COMMUNICATION_RECIPIENTS":
+      return {
+        ...state,
+        communication_recipients: action.payload,
+      };
+
+    case "GET_ID_COMMUNICATION_RECIPIENT":
+      return {
+        ...state,
+        communication_recipientDetail: action.payload,
+      };
+
+    case "POST_COMMUNICATION_RECIPIENT":
+      return {
+        ...state,
+      };
+
+    case "UPDATE_COMMUNICATION_RECIPIENT":
+      return {
+        ...state,
+        communication_recipients: state.communication_recipients.map((item) => {
+          return item.id === action.payload.id ? action.payload : item;
+        }),
+      };
+
+    case "DELETE_COMMUNICATION_RECIPIENT":
+      return {
+        ...state,
+        communication_recipients: state.communication_recipients.filter(
+          (item) => item.id !== action.payload,
+        ),
+      };
+
+    case "GET_CONVERSATIONS":
+      return {
+        ...state,
+        conversations: action.payload,
+      };
+
+    case "GET_ID_CONVERSATION":
+      return {
+        ...state,
+        conversationDetail: action.payload,
+      };
+
+    case "POST_CONVERSATION":
+      return {
+        ...state,
+        conversations: [...state.conversations, action.payload], // Agregar al array
+      };
+
+    case "UPDATE_CONVERSATION":
+      return {
+        ...state,
+        conversations: state.conversations.map((item) => {
+          return item.id === action.payload.id ? action.payload : item;
+        }),
+      };
+
+    case "DELETE_CONVERSATION":
+      return {
+        ...state,
+        conversations: state.conversations.filter(
+          (item) => item.id !== action.payload,
+        ),
+      };
+
+    case "GET_CHAT_MESSAGES":
+      return {
+        ...state,
+        chat_messages: action.payload,
+      };
+
+    case "GET_ID_CHAT_MESSAGE":
+      return {
+        ...state,
+        chat_messageDetail: action.payload,
+      };
+
+    case "POST_CHAT_MESSAGE":
+      return {
+        ...state,
+      };
+
+    case "UPDATE_CHAT_MESSAGE":
+      return {
+        ...state,
+        chat_messages: state.chat_messages.map((item) => {
+          return item.id === action.payload.id ? action.payload : item;
+        }),
+      };
+
+    case "DELETE_CHAT_MESSAGE":
+      return {
+        ...state,
+        chat_messages: state.chat_messages.filter(
+          (item) => item.id !== action.payload,
+        ),
+      };
+
     default:
       return { ...state };
   }

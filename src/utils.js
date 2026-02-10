@@ -102,9 +102,10 @@ export const capitalizeName = (name) => {
 export const getUserRoleName = (userRole) => {
   const roles = {
     0: "Programador",
-    1: "Administrador/a",
+    1: "Administrador",
     2: "Maestras y/o auxiliares",
     3: "Padres y/o tutores",
+    4: "Dirección", 
   };
 
   return roles[userRole] || "Rol desconocido";
@@ -254,6 +255,8 @@ export const infantFormData = {
   birthdate: "",
   id_tariff: 0,
   current_state: 1,
+  room: 0,
+  location: 0,
   schedule: {
     Monday: null,
     Tuesday: null,
@@ -268,3 +271,125 @@ export const infantFormData = {
 export const formatDNI = (dni) => {
   return dni.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
+
+// Función para obtener el nombre de la sala según el número
+export const getRoomName = (room) => {
+  const rooms = {
+    0: "Desconocida",
+    1: "Semillitas (bebés)",
+    2: "Primeros pasos (1 año)",
+    3: "Exploradores (2 años)",
+    4: "Pequeños expertos (3 años)",
+  };
+
+  return rooms[room] || "Sala no especificada";
+};
+
+// Función para obtener el nombre de la sede según el número
+export const getLocationName = (location) => {
+  const locations = {
+    0: "Sede Laplace",
+    1: "Sede Docta",
+  };
+
+  return locations[location] || "Sede no especificada";
+};
+
+// Verificar si un comunicado debe ser visible para un usuario
+export const isCommunicationVisibleForUser = (communication, userCreatedAt) => {
+  if (!communication || !userCreatedAt) return false;
+
+  // Convertir las fechas a objetos Date
+  const userCreatedDate = new Date(userCreatedAt);
+  
+  // Determinar la fecha efectiva del comunicado
+  // Si tiene scheduled_for, usar esa; si no, usar created_at
+  const communicationDate = communication.scheduled_for 
+    ? new Date(communication.scheduled_for)
+    : new Date(communication.created_at);
+
+  // Calcular la diferencia en días
+  const diffInMs = userCreatedDate - communicationDate;
+  const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+  // El comunicado es visible si su fecha es posterior a 30 días antes de la creación del usuario
+  // Es decir, solo se oculta si el comunicado tiene más de 30 días de antigüedad respecto al usuario
+  return diffInDays <= 30;
+};
+
+// Función para obtener información del tipo de destinatario de comunicaciones
+export const getTargetTypeInfo = (targetType) => {
+  const types = {
+    0: {
+      name: "Todos",
+      description: "Todos los usuarios del sistema",
+      icon: "FaUsers",
+    },
+    1: {
+      name: "Grupo",
+      description: "Grupo específico (por sede/sala)",
+      icon: "FaUsers",
+    },
+    2: {
+      name: "Personal del jardín",
+      description: "Solo personal docente y dirección",
+      icon: "FaUserTie",
+    },
+  };
+
+  return types[targetType] || {
+    name: "Tipo desconocido",
+    description: "",
+    icon: "FaQuestion",
+  };
+};
+
+// Función para obtener mensajes de una conversación específica
+export const getMessagesByConversationId = (allMessages, conversationId) => {
+  return allMessages.filter((msg) => msg.conversation_id === conversationId);
+};
+
+// Función para buscar conversación existente entre dos usuarios
+export const findExistingConversation = (conversations, userId1, userId2) => {
+  return conversations.find(
+    (conv) =>
+      (conv.parent_id === userId1 && conv.staff_id === userId2) ||
+      (conv.parent_id === userId2 && conv.staff_id === userId1)
+  );
+};
+
+// Función para obtener mensajes sin leer de un usuario
+export const getUnreadMessagesFromUser = (allMessages, fromUserId, toUserId) => {
+  return allMessages.filter(
+    (msg) => msg.sender_id === fromUserId && !msg.read_at
+  );
+};
+
+// Función para obtener conversaciones con mensajes sin leer
+export const getConversationsWithUnreadMessages = (conversations, messages, currentUserId) => {
+  const conversationsWithUnread = [];
+  
+  conversations.forEach((conv) => {
+    if (conv.parent_id !== currentUserId && conv.staff_id !== currentUserId) {
+      return;
+    }
+
+    const unreadCount = messages.filter(
+      (msg) =>
+        msg.conversation_id === conv.id &&
+        msg.sender_id !== currentUserId &&
+        !msg.read_at
+    ).length;
+
+    if (unreadCount > 0) {
+      conversationsWithUnread.push({
+        conversation: conv,
+        unreadCount,
+        otherUserId: conv.parent_id === currentUserId ? conv.staff_id : conv.parent_id,
+      });
+    }
+  });
+
+  return conversationsWithUnread;
+};
+

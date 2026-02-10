@@ -959,6 +959,82 @@
   letter-spacing: 0.3px;
 }
 
+.contact-description strong {
+  font-weight: 600;
+}
+
+.whatsapp-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(33, 52, 114, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 1.5rem;
+}
+
+.whatsapp-modal {
+  background: #fff5ed;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  border: 2px solid #213472;
+}
+
+.whatsapp-modal-title {
+  color: #213472;
+  font-family: georgia, palatino, "book antiqua", "palatino linotype", serif;
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.whatsapp-modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.whatsapp-option {
+  background: #213472;
+  color: #fff5ed;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.4rem;
+  font-family: georgia, palatino, "book antiqua", "palatino linotype", serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.whatsapp-option:hover {
+  background-color: #1a2859;
+  transform: translateY(-1px);
+}
+
+.whatsapp-cancel {
+  background: transparent;
+  border: 2px solid #213472;
+  color: #213472;
+  border-radius: 8px;
+  padding: 0.6rem 1.4rem;
+  font-family: georgia, palatino, "book antiqua", "palatino linotype", serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.whatsapp-cancel:hover {
+  background: #213472;
+  color: #fff5ed;
+}
+
 /* Responsive Contact Section */
 @media (max-width: 991px) {
   .contact-container {
@@ -1022,6 +1098,32 @@
   text-align: center;
   margin-bottom: 2rem;
   letter-spacing: 1px;
+}
+
+.map-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 0 0 1.5rem;
+}
+
+.map-button {
+  background: transparent;
+  color: #213472;
+  border: 2px solid #213472;
+  border-radius: 8px;
+  padding: 0.6rem 1.4rem;
+  font-family: georgia, palatino, "book antiqua", "palatino linotype", serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.map-button.active,
+.map-button:hover {
+  background: #213472;
+  color: #fff5ed;
 }
 
 .map-wrapper {
@@ -1616,5 +1718,124 @@
     left: 3px;
     width: 20px;
     height: 20px;
+  }
+}
+
+/* Dashboard Communications Carousel */
+.dashboard-communications-carousel {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  padding: 0 60px;
+}
+
+.dashboard-communications-carousel .carousel-control-prev,
+.dashboard-communications-carousel .carousel-control-next {
+  width: 50px;
+  opacity: 1;
+}
+
+.dashboard-communications-carousel .carousel-control-prev {
+  left: -60px;
+}
+
+.dashboard-communications-carousel .carousel-control-next {
+  right: -60px;
+}
+
+.dashboard-communications-carousel .carousel-control-prev-icon,
+.dashboard-communications-carousel .carousel-control-next-icon {
+  background-color: #213472;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background-size: 30px 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-communications-carousel .carousel-control-prev:hover .carousel-control-prev-icon,
+.dashboard-communications-carousel .carousel-control-next:hover .carousel-control-next-icon {
+  background-color: #1a2859;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .dashboard-communications-carousel {
+    padding: 0 50px;
+  }
+
+  .dashboard-communications-carousel .carousel-control-prev {
+    left: -50px;
+  }
+
+  .dashboard-communications-carousel .carousel-control-next {
+    right: -50px;
+  }
+
+  .dashboard-communications-carousel .carousel-control-prev-icon,
+  .dashboard-communications-carousel .carousel-control-next-icon {
+    width: 45px;
+    height: 45px;
+    background-size: 25px 25px;
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard-communications-carousel {
+    padding: 0 40px;
+  }
+
+  .dashboard-communications-carousel .carousel-control-prev {
+    left: -40px;
+  }
+
+  .dashboard-communications-carousel .carousel-control-next {
+    right: -40px;
+  }
+
+  .dashboard-communications-carousel .carousel-control-prev-icon,
+  .dashboard-communications-carousel .carousel-control-next-icon {
+    width: 40px;
+    height: 40px;
+    background-size: 20px 20px;
+  }
+}
+
+/* Botón de acción estilo dashboard */
+.dashboard-action-button {
+  background-color: #213472 !important;
+  color: #FFFFFF;
+  border: 2px solid #213472 !important;
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 600;
+  padding: 12px 30px !important;
+  margin-top: 20px !important;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+}
+
+.dashboard-action-button:hover {
+  background-color: #1a2859 !important;
+  border-color: #1a2859;
+  color: #FFFFFF !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(33, 52, 114, 0.3);
+}
+
+.chat-minimized-pulse {
+  animation: chatPulse 1.4s ease-in-out infinite;
+  box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.6);
+}
+
+@keyframes chatPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(220, 53, 69, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
   }
 }

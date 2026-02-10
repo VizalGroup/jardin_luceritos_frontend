@@ -1,7 +1,15 @@
 import { Button } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import Girlphoto from '../../assets/OurApproach.jpg'
 
 export default function OurApproach() {
+  const navigate = useNavigate()
+
+  const handleNavigate = () => {
+    navigate('/sobre_nosotros')
+    window.scrollTo(0, 0)
+  }
+
   return (
     <section className="our-approach-section">
       <div className="our-approach-container">
@@ -23,7 +31,9 @@ export default function OurApproach() {
             Creemos en una educación que respeta los tiempos individuales, promueve la autonomía y valora el juego como principal forma de aprendizaje.
           </p>
           <div className="approach-button-container">
-            <Button className="btn-know-more">Conócenos</Button>
+            <Button className="btn-know-more" onClick={handleNavigate}>
+              Conócenos
+            </Button>
           </div>
         </div>
       </div>

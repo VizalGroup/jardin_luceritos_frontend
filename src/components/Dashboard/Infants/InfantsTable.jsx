@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Table, ButtonGroup, Button } from "react-bootstrap";
 import {
-  FaBirthdayCake,
   FaChild,
   FaIdCard,
+  FaBirthdayCake,
+  FaMapMarkerAlt,
+  FaClock,
   FaReceipt,
   FaUserEdit,
-  // FaUsers,
-  FaClock,
+  FaSchool,
 } from "react-icons/fa";
 import Pagination from "../../Pagination";
 import {
@@ -17,6 +18,8 @@ import {
   formatDate,
   formatDateTime,
   formatDNI,
+  getRoomName,
+  getLocationName,
 } from "../../../utils";
 import EditInfant from "./EditInfant";
 import LinkFamily from "./LinkFamily";
@@ -84,7 +87,8 @@ const formatWeeklySchedule = (schedule) => {
   ];
 
   const activeDays = daysOfWeek.filter(
-    (day) => schedule[day.en] && schedule[day.en].entry && schedule[day.en].exit
+    (day) =>
+      schedule[day.en] && schedule[day.en].entry && schedule[day.en].exit,
   );
 
   if (activeDays.length === 0) return "Sin horario definido";
@@ -215,24 +219,20 @@ export default function InfantsTable({ infants, searchTerm }) {
           <thead>
             <tr>
               <th>
-                <FaChild title="Apellido y nombre" />
+                <FaChild title="Apellido y nombre" /> Nombre
               </th>
               <th>
-                <FaIdCard title="Documento / Pasaporte" /> Documento / Pasaporte
+                <FaIdCard title="Documento / Pasaporte" /> Documento
               </th>
               <th>
-                <FaBirthdayCake title="Fecha de Nacimiento" /> Fecha de
-                Nacimiento
+                <FaBirthdayCake title="Fecha de Nacimiento" /> Nacimiento
               </th>
               <th>
-                <FaClock title="Horario Semanal" /> Horario Semanal
+                <FaMapMarkerAlt title="Sede / Sala" /> Sede / Sala
               </th>
               <th>
-                <FaReceipt title="Tarifa (Horas y Costo)" /> Tarifa/hora
+                <FaClock title="Horario / Tarifa" /> Horario / Tarifa
               </th>
-              {/* <th>
-                <FaUsers title="Padres/tutores" /> Padres/Tutores
-              </th> */}
               <th>
                 <FaUserEdit title="Última actualización" /> Última actualización
               </th>
@@ -248,7 +248,7 @@ export default function InfantsTable({ infants, searchTerm }) {
                 return (
                   <tr key={infant.id}>
                     <td>{`${capitalizeName(infant.lastname)}, ${capitalizeName(
-                      infant.first_name
+                      infant.first_name,
                     )}`}</td>
                     <td>{formatDNI(infant.document_number) || "N/A"}</td>
                     <td>
@@ -258,6 +258,32 @@ export default function InfantsTable({ infants, searchTerm }) {
                         ({calculateAge(infant.birthdate)})
                       </span>
                     </td>
+                    <td style={{ fontSize: "0.85em" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "5px",
+                        }}
+                      >
+                        <strong>{getLocationName(infant.location)}</strong>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "5px",
+                          marginTop: "5px",
+                        }}
+                      >
+                        <FaSchool style={{ color: "#666" }} title="Sala" />
+                        <span style={{ color: "gray" }}>
+                          {getRoomName(infant.room)}
+                        </span>
+                      </div>
+                    </td>
                     <td
                       style={{
                         fontSize: "0.85em",
@@ -266,60 +292,56 @@ export default function InfantsTable({ infants, searchTerm }) {
                       }}
                     >
                       {scheduleDisplay}
-                    </td>
-                    <td
-                      style={{
-                        color:
-                          infant.tariff &&
-                          parseFloat(infant.tariff.number_of_hours) === 0
-                            ? "green"
-                            : "black",
-                      }}
-                    >
-                      {infant.tariff &&
-                      parseFloat(infant.tariff.number_of_hours) === 0 ? (
-                        "Becado/a"
-                      ) : (
-                        <>
-                          {formatCurrency(
-                            infant.tariff ? infant.tariff.price : 0
-                          )}{" "}
-                          <br />
-                          {infant.tariff && infant.tariff.number_of_hours > 1 && (
-                            <span style={{ fontSize: "0.9em", color: "gray" }}>
-                              (
-                              {infant.tariff
-                                ? formatNumber(infant.tariff.number_of_hours)
-                                : "N/A"}{" "}
-                              horas)
-                            </span>
-                          )}
-                        </>
-                      )}
-                    </td>
 
-                    {/* Columna de padres/tutores comentada temporalmente */}
-                    {/* <td>
-                      {familyLinks.some(
-                        (link) => link.id_infant === infant.id
-                      ) ? (
-                        familyLinks
-                          .filter((link) => link.id_infant === infant.id)
-                          .map((link, index) => (
-                            <span key={index}>
-                              {capitalizeName(link.user.user_last_name)},{" "}
-                              {capitalizeName(link.user.first_name)}
-                              <br />
+                      <div
+                        style={{
+                          color:
+                            infant.tariff &&
+                            parseFloat(infant.tariff.number_of_hours) === 0
+                              ? "green"
+                              : "black",
+                        }}
+                      >
+                        <FaReceipt
+                          style={{
+                            color:
+                              infant.tariff &&
+                              parseFloat(infant.tariff.number_of_hours) === 0
+                                ? "green"
+                                : "#213472",
+                          }}
+                        />
+
+                        {infant.tariff &&
+                        parseFloat(infant.tariff.number_of_hours) === 0 ? (
+                          "Becado/a"
+                        ) : (
+                          <>
+                            <span>
+                              {" "}{formatCurrency(
+                                infant.tariff ? infant.tariff.price : 0,
+                              )}
                             </span>
-                          ))
-                      ) : (
-                        <span style={{ color: "red" }}>
-                          Sin familiares vinculados
-                        </span>
-                      )}
-                    </td> */}
-                    
-                    <td>
+                            <br />
+                            {infant.tariff &&
+                              infant.tariff.number_of_hours > 1 && (
+                                <span
+                                  style={{ fontSize: "0.85em", color: "gray" }}
+                                >
+                                  (
+                                  {infant.tariff
+                                    ? formatNumber(
+                                        infant.tariff.number_of_hours,
+                                      )
+                                    : "N/A"}{" "}
+                                  horas)
+                                </span>
+                              )}
+                          </>
+                        )}
+                      </div>
+                    </td>
+                    <td style={{ fontSize: "0.85em" }}>
                       {`${infant.user ? capitalizeName(infant.user.first_name) : ""} ${
                         infant.user ? capitalizeName(infant.user.lastname) : ""
                       }`}
@@ -327,7 +349,13 @@ export default function InfantsTable({ infants, searchTerm }) {
                       {formatDateTime(infant.last_update)}
                     </td>
                     <td>
-                      <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "8px",
+                          justifyContent: "center",
+                        }}
+                      >
                         <EditInfant infant={infant} />
                         <LinkFamily infant={infant} />
                       </div>

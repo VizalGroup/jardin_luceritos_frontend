@@ -3,23 +3,31 @@ import {
   FaUser,
   FaUserCog,
   FaChild,
-  FaClock,
   FaDollarSign,
+  FaEnvelope,
 } from "react-icons/fa";
 import NavBarDB from "./NavBarDB";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { canManageSystem, getSessionTimeRemaining } from "../../utils";
+import { useEffect } from "react";
+import { canManageSystem } from "../../utils";
 import {
   GetTariffs,
   GetUserDetail,
   LogoutUser,
   GetInfants,
   GetFamilyRelationships,
+  GetCommunications,
+  GetCommunicationRecipients,
+  GetUsers,
+  GetConversations,
+  GetChatMessages,
 } from "../../redux/actions";
 import AddMySon from "./AddMySon";
 import MyChildren from "./MyChildren";
+import CommunicationBoard from "./CommunicationBoard/CommunicationBoard";
+import ParentCommunication from "./ParentCommunication";
+import FloatingChatButton from "./Chat/FloatingChatButton";
 
 export default function Dashboard() {
   document.title = "Autogestión - Luceritos Jardín Maternal";
@@ -29,7 +37,9 @@ export default function Dashboard() {
   const userDetail = useSelector((state) => state.userDetail);
   const infants = useSelector((state) => state.infants);
   const familyLinks = useSelector((state) => state.family_relationships);
-  const [timeRemaining, setTimeRemaining] = useState("");
+
+  // Verificar si es padre/madre/tutor (rol 3)
+  const isParent = authenticatedUser?.user_role === 3;
 
   // Filtrar los hijos del usuario actual
   const myChildren = familyLinks
@@ -62,34 +72,23 @@ export default function Dashboard() {
       dispatch(GetTariffs());
       dispatch(GetInfants());
       dispatch(GetFamilyRelationships());
+      dispatch(GetCommunications());
+      dispatch(GetCommunicationRecipients());
+      dispatch(GetUsers());
+      dispatch(GetConversations());
+      dispatch(GetChatMessages());
     }
-  }, [authenticatedUser, dispatch, navigate]);
-
-  // Actualizar el tiempo restante cada minuto
-  useEffect(() => {
-    if (!authenticatedUser?.expires_at) return;
-
-    const updateTime = () => {
-      const remaining = getSessionTimeRemaining(authenticatedUser.expires_at);
-      setTimeRemaining(remaining);
-
-      // Si la sesión expiró, cerrar sesión
-      if (remaining === "Sesión expirada") {
-        alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
-        dispatch(LogoutUser());
-        navigate("/iniciar_sesion");
-      }
-    };
-
-    updateTime(); // Actualizar inmediatamente
-    const interval = setInterval(updateTime, 60000); // Actualizar cada minuto
-
-    return () => clearInterval(interval);
   }, [authenticatedUser, dispatch, navigate]);
 
   // Array de módulos según el rol (ordenados alfabéticamente)
   const modules = canManageSystem(authenticatedUser?.user_role)
     ? [
+        {
+          key: "communications",
+          path: "/autogestion/comunicaciones",
+          icon: FaEnvelope,
+          text: "Comunicaciones",
+        },
         {
           key: "infants",
           path: "/autogestion/infantes",
@@ -117,15 +116,15 @@ export default function Dashboard() {
       ]
     : [];
 
-  // Verificar si es padre/madre/tutor (rol 3)
-  const isParent = authenticatedUser?.user_role === 3;
-
   if (!authenticatedUser) {
     return null;
   }
 
   return (
-    <div className="watermark-background" style={{ marginTop: "80px" }}>
+    <div
+      className="watermark-background"
+      style={{ marginTop: "80px", paddingBottom: "50px" }}
+    >
       <NavBarDB />
       <div className="text-center">
         <h3 className="user-text" style={{ color: "#213472" }}>
@@ -133,9 +132,6 @@ export default function Dashboard() {
           {userDetail?.first_name || authenticatedUser.first_name}{" "}
           {userDetail?.lastname || authenticatedUser.lastname}!
         </h3>
-        <p className="session-info" style={{ color: "#213472" }}>
-          <FaClock /> Sesión expira en: <strong>{timeRemaining}</strong>
-        </p>
       </div>
 
       <div className="container">
@@ -147,128 +143,145 @@ export default function Dashboard() {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              minHeight: "50vh",
-              padding: "40px",
+              padding: "40px 20px",
             }}
           >
-            {/* Mostrar el ícono solo si no hay niños cargados */}
+            {/* Mostrar mensaje informativo si no hay hijos vinculados */}
             {myChildren.length === 0 && (
-              <FaChild
-                size={120}
-                color="#213472"
-                style={{
-                  marginBottom: "30px",
-                  animation: "pulse 2s ease-in-out infinite",
-                }}
-              />
+              <>
+                <FaChild
+                  size={120}
+                  color="#213472"
+                  style={{
+                    marginBottom: "30px",
+                  }}
+                />
+
+                <h2
+                  style={{
+                    color: "#213472",
+                    fontWeight: "700",
+                    marginBottom: "20px",
+                    textAlign: "center",
+                    fontFamily:
+                      "georgia, palatino, 'book antiqua', 'palatino linotype', serif",
+                  }}
+                >
+                  Portal para Padres, Madres y Tutores
+                </h2>
+
+                <p
+                  style={{
+                    fontSize: "1.2rem",
+                    color: "#213472",
+                    textAlign: "center",
+                    maxWidth: "700px",
+                    marginBottom: "30px",
+                    lineHeight: "1.8",
+                    fontFamily:
+                      "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+                  }}
+                >
+                  Pronto vas a poder cargar{" "}
+                  <strong>autorizados a retirar</strong>, acceder a{" "}
+                  <strong>documentos médicos</strong> de tu hijo/a, ver el{" "}
+                  <strong>seguimiento de actividades diarias</strong>,
+                  comunicarte directamente con las educadoras y acceder a muchas
+                  más funciones desde aquí.
+                </p>
+
+                <div
+                  style={{
+                    background: "rgba(255, 245, 237, 0.5)",
+                    borderRadius: "15px",
+                    padding: "25px 35px",
+                    marginTop: "20px",
+                    border: "2px solid #FFF5ED",
+                    maxWidth: "600px",
+                    marginBottom: "30px",
+                  }}
+                >
+                  <p
+                    style={{
+                      color: "#213472",
+                      fontSize: "1rem",
+                      margin: 0,
+                      textAlign: "center",
+                      fontFamily:
+                        "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+                    }}
+                  >
+                    <strong>¡Estamos trabajando para ti!</strong>
+                    <br />
+                    Estas funcionalidades estarán disponibles muy pronto para
+                    hacer tu experiencia aún mejor.
+                  </p>
+                </div>
+              </>
             )}
 
-            <h2
-              style={{
-                color: "#213472",
-                fontWeight: "700",
-                marginBottom: "20px",
-                textAlign: "center",
-                fontFamily:
-                  "georgia, palatino, 'book antiqua', 'palatino linotype', serif",
-              }}
-            >
-              Portal para Padres, Madres y Tutores
-            </h2>
-
-            <p
-              style={{
-                fontSize: "1.2rem",
-                color: "#213472",
-                textAlign: "center",
-                maxWidth: "700px",
-                marginBottom: "30px",
-                lineHeight: "1.8",
-                fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
-              }}
-            >
-              Pronto vas a poder cargar <strong>autorizados a retirar</strong>,
-              acceder a <strong>documentos médicos</strong> de tu hijo/a, ver el{" "}
-              <strong>seguimiento de actividades diarias</strong>, comunicarte
-              directamente con las educadoras y acceder a muchas más funciones
-              desde aquí.
-            </p>
-
-            <div
-              style={{
-                background: "rgba(255, 245, 237, 0.5)",
-                borderRadius: "15px",
-                padding: "25px 35px",
-                marginTop: "20px",
-                border: "2px solid #FFF5ED",
-                maxWidth: "600px",
-              }}
-            >
-              <p
-                style={{
-                  color: "#213472",
-                  fontSize: "1rem",
-                  margin: 0,
-                  textAlign: "center",
-                  fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
-                }}
-              >
-                <strong>¡Estamos trabajando para ti!</strong>
-                <br />
-                Estas funcionalidades estarán disponibles muy pronto para hacer
-                tu experiencia aún mejor.
-              </p>
-            </div>
+            {/* Carrusel de comunicados - solo si tiene hijos vinculados */}
+            {myChildren.length > 0 && <CommunicationBoard />}
 
             <MyChildren />
-
             <AddMySon />
+            <ParentCommunication />
           </div>
         ) : (
           // Vista para administradores/personal (roles 0, 1, 2)
-          <div className="admin-panel ">
-            {modules.map((module) => {
-              const IconComponent = module.icon;
+          <>
+            <div className="admin-panel">
+              {modules.map((module) => {
+                const IconComponent = module.icon;
 
-              return (
-                <div key={module.key} className="admin-button-container ">
-                  <a href={module.path} className="module-link">
-                    <button
-                      className="btn btn-lg admin-button"
-                      style={{
-                        backgroundColor: "#213472",
-                        color: "#FFFFFF",
-                        border: "2px solid #213472",
-                        fontFamily:
-                          "georgia, palatino, 'book antiqua', 'palatino linotype', serif",
-                        fontWeight: "600",
-                        padding: "15px 30px",
-                        margin: "10px",
-                        transition: "all 0.3s ease",
-                        minWidth: "250px",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.transform = "translateY(-3px)";
-                        e.target.style.boxShadow =
-                          "0 8px 20px rgba(33, 52, 114, 0.4)";
-                        e.target.style.backgroundColor = "#1a2859";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.transform = "translateY(0)";
-                        e.target.style.boxShadow = "none";
-                        e.target.style.backgroundColor = "#213472";
-                      }}
-                    >
-                      <IconComponent style={{ marginRight: "10px" }} />
-                      <span>{module.text}</span>
-                    </button>
-                  </a>
-                </div>
-              );
-            })}
-          </div>
+                return (
+                  <div key={module.key} className="admin-button-container">
+                    <a href={module.path} className="module-link">
+                      <button
+                        className="btn btn-lg admin-button"
+                        style={{
+                          backgroundColor: "#213472",
+                          color: "#FFFFFF",
+                          border: "2px solid #213472",
+                          fontFamily:
+                            "georgia, palatino, 'book antiqua', 'palatino linotype', serif",
+                          fontWeight: "600",
+                          padding: "15px 30px",
+                          margin: "10px",
+                          transition: "all 0.3s ease",
+                          minWidth: "250px",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.transform = "translateY(-3px)";
+                          e.target.style.boxShadow =
+                            "0 8px 20px rgba(33, 52, 114, 0.4)";
+                          e.target.style.backgroundColor = "#1a2859";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = "translateY(0)";
+                          e.target.style.boxShadow = "none";
+                          e.target.style.backgroundColor = "#213472";
+                        }}
+                      >
+                        <IconComponent style={{ marginRight: "10px" }} />
+                        <span>{module.text}</span>
+                      </button>
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Carrusel de comunicados para empleados/directivos */}
+            <div style={{ marginTop: "60px" }}>
+              <CommunicationBoard />
+            </div>
+          </>
         )}
       </div>
+
+      {/* Botón flotante de chat */}
+      <FloatingChatButton />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import {
   FaUser,
   FaEnvelope,
@@ -19,7 +19,6 @@ import {
   getDocumentTypeName,
 } from "../../../utils";
 import EditUser from "./EditUser";
-import RemoveUser from "./RemoveUser";
 
 export default function UsersTable({ users }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -156,20 +155,28 @@ export default function UsersTable({ users }) {
                   </span>
                 </td>
                 <td>
-                  {user.phone && (
-                    <a
-                      href={`https://wa.me/549${user.phone}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-sm btn-success"
-                      style={{ margin: "2px" }}
-                      title="Contactar por WhatsApp"
-                    >
-                      <FaWhatsapp />
-                    </a>
-                  )}
-                  <EditUser user={user} />
-                  <RemoveUser user={user} />
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "2px",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {user.phone && (
+                      <Button className="button-custom" size="sm">
+                        <a
+                          href={`https://wa.me/549${user.phone}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: "inherit" }}
+                          title="Contactar por WhatsApp"
+                        >
+                          <FaWhatsapp />
+                        </a>
+                      </Button>
+                    )}
+                    <EditUser user={user} />
+                  </div>
                 </td>
               </tr>
             ))}
