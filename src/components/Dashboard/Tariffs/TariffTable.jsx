@@ -2,12 +2,13 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GetTariffs } from "../../../redux/actions";
 import { Table } from "react-bootstrap";
-import { formatCurrency, formatDate, formatHours } from "../../../utils";
+import { formatCurrency, formatDate, formatHours, getInfantTypeName } from "../../../utils";
+import { selectTariffsOrderedByHours } from "../../../redux/selectors";
 import EditTariff from "./EditTariff";
 
 export default function TariffTable() {
   const dispatch = useDispatch();
-  const tariffs = useSelector((state) => state.tariffs);
+  const tariffs = useSelector(selectTariffsOrderedByHours);
 
   // const nonTariffed = tariffs.find((tariff) => tariff.number_of_hours == 0);
   const realTariffs =
@@ -44,11 +45,6 @@ export default function TariffTable() {
   //   if (!infants || !infants.length || !nonTariffed) return 0;
   //   return infants.filter((infant) => infant.id_tariff === nonTariffed.id).length;
   // };
-
-  // Ordenar tarifas por número de horas
-  const sortedRealTariffs = [...realTariffs].sort(
-    (a, b) => parseFloat(a.number_of_hours) - parseFloat(b.number_of_hours),
-  );
 
   return (
     <>
@@ -95,9 +91,19 @@ export default function TariffTable() {
             </tr> */}
 
             {/* Filas para cada tarifa ordenadas por número de horas */}
-            {sortedRealTariffs.map((tariff) => (
+            {realTariffs.map((tariff) => (
               <tr key={tariff.id}>
-                <td>{formatHours(tariff.number_of_hours)}</td>
+                <td>
+                  {formatHours(tariff.number_of_hours)}
+                  {getInfantTypeName(tariff.infant_type) && (
+                    <>
+                      <br />
+                      <small className="text-muted">
+                        {getInfantTypeName(tariff.infant_type)}
+                      </small>
+                    </>
+                  )}
+                </td>
                 <td>{formatCurrency(tariff.price)} </td>
                 <td>{formatCurrency(calculateHourlyValue(tariff))}</td>
                 <td>{formatDate(tariff.last_update)}</td>

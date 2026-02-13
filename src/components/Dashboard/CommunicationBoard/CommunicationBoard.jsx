@@ -194,6 +194,7 @@ export default function CommunicationBoard() {
       <Carousel 
         interval={5000}
         indicators={false}
+        controls={publicCommunications.length > 1}
         className="dashboard-communications-carousel"
       >
         {publicCommunications.map((comm) => (
@@ -249,6 +250,33 @@ export default function CommunicationBoard() {
                     {comm.message_title}
                   </Card.Title>
                 )}
+                
+                {/* Imagen adjunta */}
+                {comm.url_img && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginBottom: "25px",
+                    }}
+                  >
+                    <img
+                      src={comm.url_img}
+                      alt="Imagen del comunicado"
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "400px",
+                        objectFit: "contain",
+                        borderRadius: "12px",
+                        border: "4px solid #213472",
+                        boxShadow: "0 4px 12px rgba(33, 52, 114, 0.3)",
+                        backgroundColor: "#FFF5ED",
+                        padding: "8px",
+                      }}
+                    />
+                  </div>
+                )}
+                
                 <Card.Text
                   style={{
                     color: "#000",

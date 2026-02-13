@@ -31,6 +31,15 @@ export const selectExtraHour = createSelector([selectAllTariffs], (tariffs) =>
   tariffs.find((tariff) => tariff.id == 1)
 );
 
+// Selector para tarifas ordenadas por number_of_hours
+export const selectTariffsOrderedByHours = createSelector(
+  [selectAllTariffs],
+  (tariffs) =>
+    [...tariffs].sort(
+      (a, b) => parseFloat(a.number_of_hours) - parseFloat(b.number_of_hours)
+    )
+);
+
 //Infantes
 
 export const selectInfants = (state) => state.infants;

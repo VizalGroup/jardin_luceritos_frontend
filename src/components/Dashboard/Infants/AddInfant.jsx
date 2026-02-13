@@ -281,6 +281,7 @@ export default function AddInfant() {
                     <option key={tariff.id} value={tariff.id}>
                       {formatHours(tariff.number_of_hours)} -{" "}
                       {formatCurrency(tariff.price)}
+                      {tariff.infant_type == 1 && " (Sala de bebé)"}
                     </option>
                   ))}
                 </Form.Control>

@@ -28,6 +28,50 @@ export default function SystemNotes() {
             <h2 className="system-notes-title">Registro de Actualizaciones</h2>
             <ul className="notes-timeline">
               <li className="timeline-item">
+                <span className="timeline-date">13 de Febrero de 2026</span>
+                <ul className="timeline-updates">
+                  <li className="update-item">
+                    <strong>Tarifas con Tipo de Infante:</strong> Se agregó la
+                    propiedad "infant_type" a las tarifas para diferenciar
+                    entre tarifa regular y tarifa para bebés/lactantes (Sala de
+                    bebé)
+                  </li>
+                  <li className="update-item">
+                    <strong>Selector de Tipo de Infante:</strong> Los
+                    formularios de agregar y editar tarifas ahora incluyen un
+                    selector para especificar si la tarifa es para sala regular
+                    o sala de bebé
+                  </li>
+                  <li className="update-item">
+                    <strong>Visualización en Selectores:</strong> Los selectores
+                    de tarifa en los módulos de infantes ahora muestran "(Sala
+                    de bebé)" cuando corresponde para mayor claridad
+                  </li>
+                  <li className="update-item">
+                    <strong>Tabla de Tarifas Mejorada:</strong> La tabla de
+                    tarifas muestra debajo de las horas si es una tarifa para
+                    bebés/lactantes con la función getInfantTypeName()
+                  </li>
+                  <li className="update-item">
+                    <strong>Imágenes en Comunicaciones:</strong> Los comunicados
+                    ahora pueden incluir imágenes adjuntas opcionales que se
+                    suben a Cloudinary mediante la función
+                    uploadImageToCloudinary
+                  </li>
+                  <li className="update-item">
+                    <strong>Visualización de Imágenes:</strong> Las imágenes de
+                    los comunicados se muestran con un borde decorativo en
+                    colores del jardín tanto en la pizarra
+                    como en la vista detallada
+                  </li>
+                  <li className="update-item">
+                    <strong>Carrusel Optimizado:</strong> Las flechas de
+                    navegación del carrusel de comunicados ahora solo aparecen
+                    cuando hay más de un comunicado para mostrar
+                  </li>
+                </ul>
+              </li>
+              <li className="timeline-item">
                 <span className="timeline-date">9 de Febrero de 2026</span>
                 <ul className="timeline-updates">
                   <li className="update-item">

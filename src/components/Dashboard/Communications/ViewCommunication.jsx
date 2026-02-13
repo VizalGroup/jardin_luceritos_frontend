@@ -88,6 +88,33 @@ export default function ViewCommunication({ communication }) {
             <h6 style={{ color: "#213472", fontWeight: "600", marginBottom: "10px" }}>
               Contenido
             </h6>
+            
+            {/* Imagen adjunta */}
+            {communication.url_img && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginBottom: "20px",
+                }}
+              >
+                <img
+                  src={communication.url_img}
+                  alt="Imagen del comunicado"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "400px",
+                    objectFit: "contain",
+                    borderRadius: "12px",
+                    border: "4px solid #213472",
+                    boxShadow: "0 4px 12px rgba(33, 52, 114, 0.3)",
+                    backgroundColor: "#FFF5ED",
+                    padding: "8px",
+                  }}
+                />
+              </div>
+            )}
+            
             <div
               style={{
                 backgroundColor: "#f8f9fa",

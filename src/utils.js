@@ -244,6 +244,16 @@ export function formatHours(hours) {
   }
 }
 
+// Función para obtener el nombre del tipo de infante según el valor
+export const getInfantTypeName = (infantType) => {
+  const types = {
+    0: "",
+    1: "Bebé/Lactante",
+  };
+
+  return types[infantType] !== undefined ? types[infantType] : "";
+};
+
 //Formulario base de infantes
 
 export const infantFormData = {
@@ -393,3 +403,37 @@ export const getConversationsWithUnreadMessages = (conversations, messages, curr
   return conversationsWithUnread;
 };
 
+//carga de imagenes
+export const uploadImageToCloudinary = (file, setUploadProgress) => {
+  return new Promise((resolve, reject) => {
+    const url = import.meta.env.VITE_API_CLOUDINARY_URL;
+    const preset = import.meta.env.VITE_API_UPLOAD_PRESET;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", preset);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+
+    // Actualiza el progreso de carga
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const progress = Math.round((event.loaded / event.total) * 100);
+        setUploadProgress(progress);
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const response = JSON.parse(xhr.responseText);
+        resolve(response.secure_url); // Guardamos la URL de la imagen
+      } else {
+        reject(new Error("Error en la subida de imagen"));
+      }
+    };
+
+    xhr.onerror = () => reject(new Error("Error en la subida de imagen"));
+    xhr.send(formData);
+  });
+};

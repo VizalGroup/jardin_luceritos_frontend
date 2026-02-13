@@ -225,6 +225,7 @@ export default function EditInfant({ infant }) {
                         ? formatHours(tariff.number_of_hours)
                         : tariff.number_of_hours + " horas"}{" "}
                       - {formatCurrency(tariff.price)}
+                      {tariff.infant_type == 1 && " (Sala de bebé)"}
                     </option>
                   ))}
                 </Form.Control>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { GetTariffs, PostTariff } from "../../../redux/actions";
 import { Form, Button, Alert, Modal, Spinner } from "react-bootstrap";
-import { FaClock, FaDollarSign, FaPlus } from "react-icons/fa";
+import { FaClock, FaDollarSign, FaPlus, FaBaby } from "react-icons/fa";
 import { getCurrentSQLDate } from "../../../utils";
 
 export default function AddTariff() {
@@ -10,6 +10,7 @@ export default function AddTariff() {
   const [formData, setFormData] = useState({
     number_of_hours: "",
     price: "",
+    infant_type: "0",
   });
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -36,7 +37,7 @@ export default function AddTariff() {
 
       await dispatch(PostTariff(tariffToSubmit));
       dispatch(GetTariffs());
-      setFormData({ number_of_hours: "", price: "" });
+      setFormData({ number_of_hours: "", price: "", infant_type: "0" });
       setShowSuccess(true);
       setTimeout(() => {
         setShowSuccess(false);
@@ -82,6 +83,21 @@ export default function AddTariff() {
               Para horas y media, use ".5" (ejemplo: 4 horas y media = 4.5)
             </Form.Text>
             <br />
+            <br />
+            <Form.Group controlId="infant_type">
+              <Form.Label>
+                <FaBaby /> Tipo de infante
+              </Form.Label>
+              <Form.Select
+                name="infant_type"
+                value={formData.infant_type}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="0">Regular</option>
+                <option value="1">Bebé/Lactante</option>
+              </Form.Select>
+            </Form.Group>
             <br />
             <Form.Group controlId="price">
               <Form.Label>

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { getCurrentSQLDate } from "../../../utils";
 import { UpdateTariff, GetTariffs } from "../../../redux/actions";
 import { Button, Modal, OverlayTrigger, Tooltip, Form } from "react-bootstrap";
-import { FaDollarSign, FaEdit, FaClock } from "react-icons/fa";
+import { FaDollarSign, FaEdit, FaClock, FaBaby } from "react-icons/fa";
 
 const EditTariff = ({ tariff }) => {
   const dispatch = useDispatch();
@@ -77,6 +77,21 @@ const EditTariff = ({ tariff }) => {
               Para horas y media, use ".5" (ejemplo: 4 horas y media = 4.5)
             </Form.Text>
             <br />
+            <br />
+            <Form.Group controlId="infant_type">
+              <Form.Label>
+                <FaBaby /> Tipo de infante
+              </Form.Label>
+              <Form.Select
+                name="infant_type"
+                value={formData.infant_type}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="0">Regular</option>
+                <option value="1">Bebé/Lactante</option>
+              </Form.Select>
+            </Form.Group>
             <br />
             <Form.Group controlId="price">
               <Form.Label>

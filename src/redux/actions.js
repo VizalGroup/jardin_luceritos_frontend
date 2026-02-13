@@ -478,6 +478,7 @@ export const PostTariff = (atributos) => {
       f.append("number_of_hours", atributos.number_of_hours);
       f.append("price", atributos.price);
       f.append("last_update", atributos.last_update);
+      f.append("infant_type", atributos.infant_type);
       var response = await axios.post(tariffsURL, f);
       return dispatch({
         type: POST_TARIFF,
@@ -498,6 +499,7 @@ export const UpdateTariff = (id, atributos) => {
       f.append("number_of_hours", atributos.number_of_hours);
       f.append("price", atributos.price);
       f.append("last_update", atributos.last_update);
+      f.append("infant_type", atributos.infant_type);
       var response = await axios.post(tariffsURL, f, { params: { id: id } });
       return dispatch({
         type: UPDATE_TARIFF,
@@ -809,6 +811,7 @@ export const PostCommunication = (atributos) => {
       f.append("created_at", atributos.created_at);
       f.append("updated_at", atributos.updated_at);
       f.append("scheduled_for", atributos.scheduled_for || "");
+      f.append("url_img", atributos.url_img || "");
       var response = await axios.post(communicationsURL, f);
       console.log("Comunicación creada en la ACTION: ", response.data);
       return dispatch({
@@ -836,6 +839,7 @@ export const UpdateCommunication = (id, atributos) => {
       f.append("created_at", atributos.created_at);
       f.append("updated_at", atributos.updated_at);
       f.append("scheduled_for", atributos.scheduled_for || "");
+      f.append("url_img", atributos.url_img || "");
       var response = await axios.post(communicationsURL, f, {
         params: { id: id },
       });

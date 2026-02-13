@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Modal, Form, Row, Col, Alert, Spinner } from "react-bootstrap";
-import { FaEdit, FaEnvelope, FaClock, FaMapMarkerAlt, FaSchool, FaUser } from "react-icons/fa";
+import { FaEdit, FaEnvelope, FaClock, FaMapMarkerAlt, FaSchool, FaUser, FaImage } from "react-icons/fa";
 import {
   UpdateCommunication,
   GetCommunications,
 } from "../../../redux/actions";
-import { getCurrentDateTime, sanitizeText } from "../../../utils";
+import { getCurrentDateTime, sanitizeText, uploadImageToCloudinary } from "../../../utils";
 
 export default function EditCommunication({ communication }) {
   const dispatch = useDispatch();
@@ -16,6 +16,8 @@ export default function EditCommunication({ communication }) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [pictureUrl, setPictureUrl] = useState(communication.url_img || null);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const [formData, setFormData] = useState({
     message_title: communication.message_title || "",
@@ -26,10 +28,29 @@ export default function EditCommunication({ communication }) {
     scheduled_for: communication.scheduled_for || "",
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const handleInputChange = async (e) => {
+    const { name, value, files } = e.target;
     
-    if (name === "target_type") {
+    if (name === "url_img") {
+      const file = files[0];
+      if (file) {
+        try {
+          setIsSubmitting(true);
+          const uploadedUrl = await uploadImageToCloudinary(
+            file,
+            setUploadProgress,
+          );
+          setPictureUrl(uploadedUrl);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          setErrorMessage("Error al subir la imagen");
+          setShowError(true);
+        } finally {
+          setIsSubmitting(false);
+          setUploadProgress(0);
+        }
+      }
+    } else if (name === "target_type") {
       // Limpiar campos según el tipo seleccionado
       if (value === "0" || value === "2") {
         // Tipo "Todos" o "Personal del jardín" - limpiar sede y sala
@@ -80,6 +101,7 @@ export default function EditCommunication({ communication }) {
         target_location: parseInt(formData.target_type) === 1 ? formData.target_location : "",
         target_room: parseInt(formData.target_type) === 1 ? formData.target_room : "",
         scheduled_for: formData.scheduled_for || null,
+        url_img: pictureUrl || null,
         updated_at: currentDateTime,
       };
 
@@ -105,6 +127,8 @@ export default function EditCommunication({ communication }) {
     setShowSuccess(false);
     setShowError(false);
     setErrorMessage("");
+    setPictureUrl(communication.url_img || null);
+    setUploadProgress(0);
     
     // Resetear formulario a valores originales
     setFormData({
@@ -257,6 +281,47 @@ export default function EditCommunication({ communication }) {
               <Form.Text className="text-muted">
                 Dejar vacío para enviar inmediatamente
               </Form.Text>
+            </Form.Group>
+
+            {/* Imagen adjunta */}
+            <Form.Group className="mb-3" controlId="url_img">
+              <Form.Label>
+                <FaImage /> Imagen adjunta (opcional)
+              </Form.Label>
+              <Form.Control
+                type="file"
+                name="url_img"
+                onChange={handleInputChange}
+                accept="image/*"
+                disabled={isSubmitting}
+              />
+              {uploadProgress > 0 && uploadProgress < 100 && (
+                <div className="mt-2">
+                  <div className="progress">
+                    <div
+                      className="progress-bar"
+                      style={{ width: `${uploadProgress}%` }}
+                    >
+                      {uploadProgress}%
+                    </div>
+                  </div>
+                </div>
+              )}
+              {pictureUrl && (
+                <div className="mt-3">
+                  <img
+                    src={pictureUrl}
+                    alt="Imagen adjunta"
+                    style={{
+                      width: "150px",
+                      height: "150px",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                      border: "2px solid #dee2e6",
+                    }}
+                  />
+                </div>
+              )}
             </Form.Group>
           </Modal.Body>
 
