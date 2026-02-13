@@ -84,13 +84,21 @@ export default function AddCommunication() {
         ...formData,
         message_title: formData.message_title ? sanitizeText(formData.message_title) : "",
         message_content: sanitizeText(formData.message_content),
-        url_img: pictureUrl || null,
+        url_img: pictureUrl || "",
+        // Enviar valores vacíos en lugar de null para location y room si no están seleccionados
+        target_location: formData.target_location || "",
+        target_room: formData.target_room || "",
+        scheduled_for: formData.scheduled_for || "",
         created_at: currentDateTime,
         updated_at: currentDateTime,
       };
 
+      console.log("📤 Datos a enviar:", communicationToSubmit);
+
       // Crear la comunicación
       const communicationResult = await dispatch(PostCommunication(communicationToSubmit));
+      
+      console.log("✅ Comunicación creada:", communicationResult);
       
       // Marcar la comunicación como leída para el emisor
       if (communicationResult.payload?.id && authenticatedUser?.id) {

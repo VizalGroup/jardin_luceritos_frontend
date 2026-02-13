@@ -15,6 +15,12 @@ export default function Communications() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const communications = useSelector(selectCommunicationsOrderedById);
+  const authenticatedUser = useSelector((state) => state.authenticatedUser);
+  
+  // Solo Programador (0), Administración (1) y Dirección (4) pueden ver conversaciones
+  const canViewChats = authenticatedUser?.user_role === 0 || 
+                       authenticatedUser?.user_role === 1 || 
+                       authenticatedUser?.user_role === 4;
 
   useEffect(() => {
     dispatch(GetCommunications());
@@ -30,12 +36,14 @@ export default function Communications() {
         <div className="d-flex gap-3 mb-4">
           <BackButton />
           <AddCommunication />
-          <Button
-            className="button-custom"
-            onClick={() => navigate("/autogestion/comunicaciones/chats")}
-          >
-            <FaComments /> Conversaciones
-          </Button>
+          {canViewChats && (
+            <Button
+              className="button-custom"
+              onClick={() => navigate("/autogestion/comunicaciones/chats")}
+            >
+              <FaComments /> Conversaciones
+            </Button>
+          )}
         </div>
         <h2 className="text-center module-title">Gestión de Comunicaciones</h2>
         <CommunicationsTable communications={communications} />

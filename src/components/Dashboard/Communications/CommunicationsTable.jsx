@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Table, Form, Row, Col } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import {
@@ -9,7 +9,6 @@ import {
   FaSchool,
   FaUser,
   FaCalendarPlus,
-  FaEye,
   FaCheckCircle,
 } from "react-icons/fa";
 import Pagination from "../../Pagination";
@@ -24,10 +23,9 @@ import {
   getLocationName,
   getRoomName,
   getTargetTypeInfo,
-  canManageSystem,
 } from "../../../utils";
 
-export default function CommunicationsTable({ communications }) {
+export default function CommunicationsTable({ communications }) {  
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
@@ -41,6 +39,11 @@ export default function CommunicationsTable({ communications }) {
 
   // Verificar si es padre/madre/tutor (rol 3)
   const isParent = authenticatedUser?.user_role === 3;
+  
+  // Verificar si puede editar comunicaciones (solo Programador, Administración y Dirección)
+  const canEditCommunications = authenticatedUser?.user_role === 0 || 
+                                authenticatedUser?.user_role === 1 || 
+                                authenticatedUser?.user_role === 4;
 
   useEffect(() => {
     setCurrentPage(1);
@@ -380,7 +383,7 @@ export default function CommunicationsTable({ communications }) {
                       }}
                     >
                       <ViewCommunication communication={comm} />
-                      {!isParent && (
+                      {!isParent && canEditCommunications && (
                         <>
                           <EditCommunication communication={comm} />
                           <RemoveCommunication communication={comm} />

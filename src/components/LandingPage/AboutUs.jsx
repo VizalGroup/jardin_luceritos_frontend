@@ -1,4 +1,3 @@
-import React from 'react'
 import LargeImage from '../../assets/Entrada_1.jpg'
 import LargeImage2 from '../../assets/gallery_2.jpeg'
 import NavigationBar from './NavigationBar'

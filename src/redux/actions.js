@@ -812,14 +812,28 @@ export const PostCommunication = (atributos) => {
       f.append("updated_at", atributos.updated_at);
       f.append("scheduled_for", atributos.scheduled_for || "");
       f.append("url_img", atributos.url_img || "");
+      
+      console.log("📤 Enviando comunicación con:");
+      console.log("   Target Type:", atributos.target_type);
+      console.log("   Target Location:", atributos.target_location || "vacío");
+      console.log("   Target Room:", atributos.target_room || "vacío");
+      
       var response = await axios.post(communicationsURL, f);
-      console.log("Comunicación creada en la ACTION: ", response.data);
+      console.log("✅ Respuesta del servidor:", response.data);
+      
+      if (response.data.email_stats) {
+        console.log("📧 Estadísticas de emails:");
+        console.log("   Enviados:", response.data.email_stats.emails_sent);
+        console.log("   Fallidos:", response.data.email_stats.emails_failed);
+        console.log("   Total destinatarios:", response.data.email_stats.total_recipients);
+      }
+      
       return dispatch({
         type: POST_COMMUNICATION,
-        payload: response.data,
+        payload: response.data.communication || response.data,
       });
     } catch (err) {
-      console.log(err);
+      console.error("❌ Error al crear comunicación:", err);
       throw err;
     }
   };

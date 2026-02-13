@@ -177,6 +177,12 @@ export const canManageSystem = (userRole) => {
   return role === 0 || role === 1 || role === 2;
 };
 
+// Función para verificar si puede editar usuarios (solo Programador, Administración y Dirección)
+export const canEditUsers = (userRole) => {
+  const role = parseInt(userRole);
+  return role === 0 || role === 1 || role === 4;
+};
+
 // Función para calcular el tiempo restante de sesión
 export const getSessionTimeRemaining = (expiresAt) => {
   if (!expiresAt) return "No disponible";

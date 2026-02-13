@@ -5,7 +5,7 @@ import NavBarDB from "../NavBarDB";
 import BackButton from "../../BackButton";
 import { selectSortedUsers } from "../../../redux/selectors";
 import { canManageSystem, normalizeText } from "../../../utils";
-import { GetUsers, LogoutUser } from "../../../redux/actions";
+import { GetUsers, LogoutUser, GetInfants, GetFamilyRelationships } from "../../../redux/actions";
 import { Button } from "react-bootstrap";
 import { FaCopy } from "react-icons/fa";
 import AddUser from "./AddUser";
@@ -54,6 +54,8 @@ export default function Users() {
     }
 
     dispatch(GetUsers());
+    dispatch(GetInfants());
+    dispatch(GetFamilyRelationships());
   }, [dispatch, authenticatedUser, navigate]);
 
   const filteredUsers = users.filter((user) => {
