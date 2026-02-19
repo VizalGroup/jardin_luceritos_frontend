@@ -1,17 +1,19 @@
 import { createSelector } from "reselect";
 
-// Selector general para usuarios y usuarios ordenados por user_rol y despues alfabeticamente por lastname y first_name
+// Selector general para usuarios y usuarios ordenados por user_rol (Primero todos los user role que no sean 3 es decir el staff y despues los padres) y despues alfabeticamente por lastname y first_name
 export const selectUsers = (state) => state.users;
 
 export const selectSortedUsers = createSelector([selectUsers], (users) => {
   return [...users].sort((a, b) => {
-    if (a.user_role === b.user_role) {
-        if (a.lastname === b.lastname) {
-            return a.first_name.localeCompare(b.first_name);
-        }
-        return a.lastname.localeCompare(b.lastname);
+    const aIsParent = a.user_role === 3;
+    const bIsParent = b.user_role === 3;
+    if (aIsParent !== bIsParent) {
+      return aIsParent ? 1 : -1; // staff primero, padres al final
     }
-    return a.user_role - b.user_role;
+    if (a.lastname === b.lastname) {
+      return a.first_name.localeCompare(b.first_name);
+    }
+    return a.lastname.localeCompare(b.lastname);
   });
 });
 

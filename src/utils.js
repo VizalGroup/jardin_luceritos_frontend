@@ -171,10 +171,10 @@ export const getDocumentTypeName = (documentType) => {
   return types[documentType] || "Tipo de documento desconocido";
 };
 
-// Función para verificar si puede gestionar usuarios y Otros Modulos (roles 0, 1, 2)
+// Función para verificar si puede gestionar usuarios y Otros Modulos (roles 0, 1, 2 y 4)
 export const canManageSystem = (userRole) => {
   const role = parseInt(userRole);
-  return role === 0 || role === 1 || role === 2;
+  return role === 0 || role === 1 || role === 2 || role === 4;
 };
 
 // Función para verificar si puede editar usuarios (solo Programador, Administración y Dirección)

@@ -28,6 +28,23 @@ export default function SystemNotes() {
             <h2 className="system-notes-title">Registro de Actualizaciones</h2>
             <ul className="notes-timeline">
               <li className="timeline-item">
+                <span className="timeline-date">19 de Febrero de 2026</span>
+                <ul className="timeline-updates">
+                  <li className="update-item">
+                    <strong>Corrección de Permisos para Directivos:</strong> Se
+                    corrigieron los permisos del rol de directivos para que
+                    accedan correctamente a las secciones habilitadas según su
+                    nivel
+                  </li>
+                  <li className="update-item">
+                    <strong>Orden de Tabla de Usuarios:</strong> Se reordenó la
+                    tabla de usuarios para que el personal (staff) aparezca
+                    siempre antes que los padres y tutores, independientemente
+                    del número de rol asignado
+                  </li>
+                </ul>
+              </li>
+              <li className="timeline-item">
                 <span className="timeline-date">13 de Febrero de 2026</span>
                 <ul className="timeline-updates">
                   <li className="update-item">
