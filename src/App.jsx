@@ -17,6 +17,7 @@ import SystemNotes from "./components/Dashboard/SystemNotes/SystemNotes";
 import Communications from "./components/Dashboard/Communications/Communications";
 import CommunicationHistory from "./components/Dashboard/Communications/CommunicationHistory";
 import Chats from "./components/Dashboard/Communications/Chats/Chats";
+import Administration from "./components/Dashboard/Administration/Administration";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
       <Route path="/autogestion/comunicaciones" element={<Communications />} />
       <Route path="/autogestion/comunicaciones/chats" element={<Chats />} />
       <Route path="/autogestion/historial-comunicaciones" element={<CommunicationHistory />} />
+      <Route path="/autogestion/administracion" element={<Administration />} />
      </Routes>
     </>
   )

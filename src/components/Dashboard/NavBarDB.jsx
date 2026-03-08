@@ -11,6 +11,7 @@ import {
   FaChild,
   FaEnvelope,
   FaHistory,
+  FaBookOpen,
 } from "react-icons/fa";
 
 export default function NavBarDB() {
@@ -101,6 +102,14 @@ export default function NavBarDB() {
                     <hr className="dropdown-divider" />
                   </li>
 
+                  <li className="nav-item">
+                    <a className="nav-link" href="/autogestion/administracion">
+                      <FaBookOpen /> Administración
+                    </a>
+                  </li>
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
                   <li className="nav-item">
                     <a className="nav-link" href="/autogestion/comunicaciones">
                       <FaEnvelope /> Comunicaciones

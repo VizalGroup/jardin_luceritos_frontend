@@ -1,3 +1,9 @@
+export const getPaymentMethod = (method) => {
+  if (method === 1) return "Efectivo";
+  if (method === 2) return "Transferencia";
+  return "Desconocido";
+};
+
 // Formatear fechas con el formato dd/mm/aaaa
 export const formatDate = (dateString) => {
   if (!dateString || dateString === "0000-00-00") {

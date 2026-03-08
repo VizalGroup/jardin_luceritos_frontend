@@ -5,6 +5,7 @@ import {
   FaChild,
   FaDollarSign,
   FaEnvelope,
+  FaBookOpen,
 } from "react-icons/fa";
 import NavBarDB from "./NavBarDB";
 import { useNavigate } from "react-router-dom";
@@ -83,6 +84,12 @@ export default function Dashboard() {
   // Array de módulos según el rol (ordenados alfabéticamente)
   const modules = canManageSystem(authenticatedUser?.user_role)
     ? [
+        {
+          key: "administration",
+          path: "/autogestion/administracion",
+          icon: FaBookOpen,
+          text: "Administración",
+        },
         {
           key: "communications",
           path: "/autogestion/comunicaciones",

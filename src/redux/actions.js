@@ -55,6 +55,12 @@ export const POST_CHAT_MESSAGE = "POST_CHAT_MESSAGE";
 export const UPDATE_CHAT_MESSAGE = "UPDATE_CHAT_MESSAGE";
 export const DELETE_CHAT_MESSAGE = "DELETE_CHAT_MESSAGE";
 
+export const GET_CHARGES = "GET_CHARGES";
+export const GET_ID_CHARGE = "GET_ID_CHARGE";
+export const POST_CHARGE = "POST_CHARGE";
+export const UPDATE_CHARGE = "UPDATE_CHARGE";
+export const DELETE_CHARGE = "DELETE_CHARGE";
+
 // url base de la API
 const usersURL = import.meta.env.VITE_API_USERS_URL;
 const authUserURL = import.meta.env.VITE_API_AUTH_USERS_URL;
@@ -68,6 +74,7 @@ const communicationRecipientsURL = import.meta.env
   .VITE_API_COMMUNICATION_RECIPIENTS_URL;
 const conversationsURL = import.meta.env.VITE_API_CONVERSATIONS_URL;
 const chatMessagesURL = import.meta.env.VITE_API_CHAT_MESSAGES_URL;
+const chargesURL = import.meta.env.VITE_API_CHARGES_URL;
 
 // actions de usuarios
 
@@ -812,22 +819,25 @@ export const PostCommunication = (atributos) => {
       f.append("updated_at", atributos.updated_at);
       f.append("scheduled_for", atributos.scheduled_for || "");
       f.append("url_img", atributos.url_img || "");
-      
+
       console.log("📤 Enviando comunicación con:");
       console.log("   Target Type:", atributos.target_type);
       console.log("   Target Location:", atributos.target_location || "vacío");
       console.log("   Target Room:", atributos.target_room || "vacío");
-      
+
       var response = await axios.post(communicationsURL, f);
       console.log("✅ Respuesta del servidor:", response.data);
-      
+
       if (response.data.email_stats) {
         console.log("📧 Estadísticas de emails:");
         console.log("   Enviados:", response.data.email_stats.emails_sent);
         console.log("   Fallidos:", response.data.email_stats.emails_failed);
-        console.log("   Total destinatarios:", response.data.email_stats.total_recipients);
+        console.log(
+          "   Total destinatarios:",
+          response.data.email_stats.total_recipients,
+        );
       }
-      
+
       return dispatch({
         type: POST_COMMUNICATION,
         payload: response.data.communication || response.data,
@@ -1050,24 +1060,25 @@ export const PostConversation = (atributos) => {
       f.append("staff_id", atributos.staff_id);
       f.append("created_at", atributos.created_at);
       f.append("updated_at", atributos.updated_at);
-      
+
       var response = await axios.post(conversationsURL, f);
       console.log("Conversación creada en la ACTION:", response.data);
-      
+
       // Verificar que la respuesta tiene los datos correctos
       // El backend puede devolver 'id' o 'conversation_id'
-      const conversationId = response.data?.id || response.data?.conversation_id;
-      
+      const conversationId =
+        response.data?.id || response.data?.conversation_id;
+
       if (!conversationId) {
         throw new Error("La respuesta del servidor no contiene un ID válido");
       }
-      
+
       // Normalizar la respuesta para que siempre tenga 'id'
       const normalizedData = {
         ...response.data,
         id: conversationId,
       };
-      
+
       return dispatch({
         type: POST_CONVERSATION,
         payload: normalizedData,
@@ -1166,7 +1177,7 @@ export const GetChatMessageDetail = (id) => {
   };
 };
 
-export const PostChatMessage = (atributos) => {  
+export const PostChatMessage = (atributos) => {
   return async function (dispatch) {
     try {
       var f = new FormData();
@@ -1178,7 +1189,7 @@ export const PostChatMessage = (atributos) => {
       f.append("created_at", atributos.created_at);
       f.append("updated_at", atributos.updated_at);
       f.append("attachment_url", atributos.attachment_url || "");
-      var response = await axios.post(chatMessagesURL, f);      
+      var response = await axios.post(chatMessagesURL, f);
       return dispatch({
         type: POST_CHAT_MESSAGE,
         payload: response.data,
@@ -1230,6 +1241,137 @@ export const DeleteChatMessage = (id) => {
       });
     } catch (err) {
       alert("Error al eliminar mensaje de chat: ", err);
+    }
+  };
+};
+
+// Actions para cargos
+
+export const GetCharges = () => {
+  return async function (dispatch) {
+    try {
+      var response = await axios.get(chargesURL);
+      if (response.data !== null) {
+        return dispatch({
+          type: GET_CHARGES,
+          payload: response.data,
+        });
+      } else {
+        return dispatch({
+          type: GET_CHARGES,
+          payload: [],
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  };
+};
+
+export const GetChargeDetail = (id) => {
+  return async function (dispatch) {
+    try {
+      const response = await axios.get(`${chargesURL}?id=${id}`);
+      if (response.data) {
+        return dispatch({
+          type: GET_ID_CHARGE,
+          payload: response.data,
+        });
+      } else {
+        return dispatch({
+          type: GET_ID_CHARGE,
+          payload: [],
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
+
+export const PostCharge = (atributos) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "POST");
+      f.append("id_infant", atributos.id_infant);
+      f.append("id_user", atributos.id_user);
+      f.append("quantity", atributos.quantity);
+      f.append("charge_title", atributos.charge_title);
+      f.append("amount", atributos.amount);
+      f.append("due_date", atributos.due_date);
+      f.append("created_at", atributos.created_at);
+      f.append("current_state", atributos.current_state);
+      f.append("payment_method", atributos.payment_method);
+      f.append("paid_at", atributos.paid_at !== null ? atributos.paid_at : "");
+      f.append("paid_by", atributos.paid_by !== null ? atributos.paid_by : "");
+      f.append(
+        "url_payment_document",
+        atributos.url_payment_document !== null
+          ? atributos.url_payment_document
+          : "",
+      );
+      var response = await axios.post(chargesURL, f);
+      console.log(response);
+      return dispatch({
+        type: POST_CHARGE,
+        payload: response.data,
+      });
+    } catch (err) {
+      alert(err);
+      throw err;
+    }
+  };
+};
+
+export const UpdateCharge = (id, atributos) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "PUT");
+      f.append("id_infant", atributos.id_infant);
+      f.append("id_user", atributos.id_user);
+      f.append("quantity", atributos.quantity);
+      f.append("charge_title", atributos.charge_title);
+      f.append("amount", atributos.amount);
+      f.append("due_date", atributos.due_date);
+      f.append("created_at", atributos.created_at);
+      f.append("current_state", atributos.current_state);
+      f.append("payment_method", atributos.payment_method || "");
+      f.append("paid_at", atributos.paid_at !== null ? atributos.paid_at : "");
+      f.append("paid_by", atributos.paid_by !== null ? atributos.paid_by : "");
+      f.append(
+        "url_payment_document",
+        atributos.url_payment_document !== null
+          ? atributos.url_payment_document
+          : "",
+      );
+
+      var response = await axios.post(chargesURL, f, { params: { id: id } });
+      return dispatch({
+        type: UPDATE_CHARGE,
+        payload: response.data,
+      });
+    } catch (err) {
+      alert(err);
+      throw err;
+    }
+  };
+};
+
+export const DeleteCharge = (id) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "DELETE");
+      var response = await axios.post(chargesURL, f, { params: { id: id } });
+      return dispatch({
+        type: DELETE_CHARGE,
+        payload: response.id,
+      });
+    } catch (err) {
+      alert("Error al eliminar cargo: ", err);
     }
   };
 };

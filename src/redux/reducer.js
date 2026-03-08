@@ -19,6 +19,8 @@ const initialState = {
   conversationDetail: [],
   chat_messages: [],
   chat_messageDetail: [],
+  charges: [],
+  charge_detail: [],
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -305,6 +307,37 @@ const rootReducer = (state = initialState, action) => {
         chat_messages: state.chat_messages.filter(
           (item) => item.id !== action.payload,
         ),
+      };
+
+    case "GET_CHARGES":
+      return {
+        ...state,
+        charges: action.payload,
+      };
+
+    case "GET_ID_CHARGE":
+      return {
+        ...state,
+        charge_detail: action.payload,
+      };
+
+    case "POST_CHARGE":
+      return {
+        ...state,
+      };
+
+    case "UPDATE_CHARGE":
+      return {
+        ...state,
+        charges: state.charges.map((item) => {
+          return item.id === action.payload.id ? action.payload : item;
+        }),
+      };
+
+    case "DELETE_CHARGE":
+      return {
+        ...state,
+        charges: state.charges.filter((item) => item.id !== action.payload),
       };
 
     default:

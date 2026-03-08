@@ -77,6 +77,25 @@ export const selectActiveInfantsOrderedByLastName = createSelector(
     })
 );
 
+// Selector para infantes activos con tarifa mensual válida (excluye becados y hora extra)
+export const selectActiveInfantsWithFixedFee = createSelector(
+  [selectActivateInfants],
+  (activeInfants) =>
+    [...activeInfants]
+      .filter(
+        (infant) =>
+          infant.tariff &&
+          parseFloat(infant.tariff.number_of_hours) > 1 &&
+          infant.schedule
+      )
+      .sort((a, b) => {
+        const lastNameComparison = a.lastname.localeCompare(b.lastname);
+        return lastNameComparison !== 0
+          ? lastNameComparison
+          : a.first_name.localeCompare(b.first_name);
+      })
+);
+
 // Comunicaciones
 
 export const selectCommunications = (state) => state.communications;
@@ -197,4 +216,13 @@ export const selectUnreadCountForConversation = createSelector(
       (msg) => msg.sender_id !== userId && !msg.read_at
     ).length;
   }
+);
+
+// Selector general de cargos y ordenados de ID más alto a más bajo
+
+export const selectCharges = (state) => state.charges;
+
+export const selectChargesOrderedById = createSelector(
+  [selectCharges],
+  (charges) => [...charges].sort((a, b) => b.id - a.id)
 );
