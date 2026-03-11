@@ -255,8 +255,7 @@ export default function EditCommunication({ communication }) {
                         <option value="">Todas las salas</option>
                         <option value="1">Semillitas (bebés)</option>
                         <option value="2">Primeros pasos (1 año)</option>
-                        <option value="3">Exploradores (2 años)</option>
-                        <option value="4">Pequeños expertos (3 años)</option>
+                        <option value="3">Exploradores y Pequeños expertos (2/3 años)</option>
                       </Form.Control>
                     </Form.Group>
                   </Col>

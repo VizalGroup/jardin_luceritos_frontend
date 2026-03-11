@@ -172,8 +172,7 @@ export default function CommunicationsTable({ communications }) {
                 <option value="">Todas las salas</option>
                 <option value="1">Solo Semillitas (bebés)</option>
                 <option value="2">Solo Primeros pasos (1 año)</option>
-                <option value="3">Solo Exploradores (2 años)</option>
-                <option value="4">Solo Pequeños expertos (3 años)</option>
+                <option value="3">Solo Exploradores y Pequeños expertos (2/3 años)</option>
               </Form.Select>
             </Form.Group>
           </Col>

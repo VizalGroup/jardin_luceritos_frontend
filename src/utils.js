@@ -189,6 +189,15 @@ export const canEditUsers = (userRole) => {
   return role === 0 || role === 1 || role === 4;
 };
 
+// Función para verificar si puede acceder al módulo de Administración
+// Permitido: roles 0 y 1, y excepcionalmente el usuario con id 5 (rol 4)
+export const canAccessAdministration = (userRole, userId) => {
+  const role = parseInt(userRole);
+  if (role === 0 || role === 1) return true;
+  if (role === 4 && parseInt(userId) === 5) return true;
+  return false;
+};
+
 // Función para calcular el tiempo restante de sesión
 export const getSessionTimeRemaining = (expiresAt) => {
   if (!expiresAt) return "No disponible";
@@ -300,8 +309,7 @@ export const getRoomName = (room) => {
     0: "Desconocida",
     1: "Semillitas (bebés)",
     2: "Primeros pasos (1 año)",
-    3: "Exploradores (2 años)",
-    4: "Pequeños expertos (3 años)",
+    3: "Exploradores y Pequeños expertos (2/3 años)",
   };
 
   return rooms[room] || "Sala no especificada";
@@ -448,4 +456,95 @@ export const uploadImageToCloudinary = (file, setUploadProgress) => {
     xhr.onerror = () => reject(new Error("Error en la subida de imagen"));
     xhr.send(formData);
   });
+};
+
+export function SaveFileToDrive(e) {
+  return new Promise((resolve, reject) => {
+    var file = e.target.files[0];
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function (e) {
+      var rawLog = reader.result.split(",")[1];
+      var dataSend = {
+        dataReq: { data: rawLog, name: file.name, type: file.type },
+        fname: "uploadFilesToGoogleDrive",
+      };
+      fetch(
+        "https://script.google.com/macros/s/AKfycbypMaiz-YpxDC7LvtmhFbf9-dYHMPBJVS0Vk6sdHtW9Y78xYniYJDi9jK3ta4q4Tx3L/exec",
+        { method: "POST", body: JSON.stringify(dataSend) }
+      )
+        .then((res) => res.json())
+        .then((response) => {
+          if (response.url) {
+            resolve(response.url);
+          } else {
+            reject(new Error("Failed to upload file"));
+          }
+        })
+        .catch((e) => reject(e));
+    };
+  });
+}
+
+// Función para validar si una fecha está dentro de un rango
+export const isDateInRange = (dateString, fromDate, toDate) => {
+  if (!dateString || dateString === "0000-00-00") return false;
+  if (!fromDate && !toDate) return true;
+
+  const date = new Date(dateString);
+  const from = fromDate ? new Date(fromDate) : null;
+  const to = toDate ? new Date(toDate) : null;
+
+  if (from && to) {
+    return date >= from && date <= to;
+  } else if (from) {
+    return date >= from;
+  } else if (to) {
+    return date <= to;
+  }
+
+  return true;
+};
+
+export const isOverdue = (dueDate, currentState) => {
+  // Solo los cargos pendientes (current_state === 0) pueden estar vencidos
+  if (currentState !== 0) return false;
+  
+  if (!dueDate || dueDate === "0000-00-00") return false;
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Normalizar a medianoche
+  
+  const due = new Date(dueDate);
+  due.setHours(0, 0, 0, 0); // Normalizar a medianoche
+  
+  return due < today;
+};
+
+// Función para generar slots de tiempo dinámicos basados en los horarios de los niños
+export const generateDynamicTimeSlots = (children, currentDay) => {
+  const times = new Set();
+
+  children.forEach((child) => {
+    if (!child.schedule || !child.schedule[currentDay]) return;
+
+    const entryTime = child.schedule[currentDay].entry;
+    const exitTime = child.schedule[currentDay].exit;
+
+    if (entryTime) times.add(entryTime);
+    if (exitTime) times.add(exitTime);
+  });
+
+  // Convertir a array y ordenar
+  const sortedTimes = Array.from(times).sort((a, b) => {
+    const [hoursA, minutesA] = a.split(":").map(Number);
+    const [hoursB, minutesB] = b.split(":").map(Number);
+
+    const totalMinutesA = hoursA * 60 + minutesA;
+    const totalMinutesB = hoursB * 60 + minutesB;
+
+    return totalMinutesA - totalMinutesB;
+  });
+
+  return sortedTimes;
 };

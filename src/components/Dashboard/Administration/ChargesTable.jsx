@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectChargesOrderedById } from "../../../redux/selectors";
-import { capitalizeName, formatCurrency, formatDate, getPaymentMethod } from "../../../utils";
+import {
+  capitalizeName,
+  formatCurrency,
+  formatDate,
+  getPaymentMethod,
+} from "../../../utils";
 import { getChargeStatus } from "../../../UtilsReact";
 import { Button, ButtonGroup, Table, Badge, Form } from "react-bootstrap";
 import {
@@ -13,10 +18,17 @@ import {
 } from "react-icons/fa";
 import SearchBar from "../../SearchBar";
 import Pagination from "../../Pagination";
-
+import EditCharge from "./EditCharge";
+import RemoveCharge from "./RemoveCharge";
+import VerifyPayment from "./VerifyPayment";
+import DeclareCashPayment from "./DeclareCashPayment";
+import DebtTracker from "./DebtTracker";
+import RealIncomeTracker from "./RealIncomeTracker";
 
 export default function ChargesTable() {
   const charges = useSelector(selectChargesOrderedById);
+  console.log(charges);
+  
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
   const [filterState, setFilterState] = useState(null);
@@ -37,18 +49,21 @@ export default function ChargesTable() {
       if (!searchTerm) return true;
       const q = searchTerm.toLowerCase();
       const title = c.charge_title?.toLowerCase() || "";
-      const name = `${c.infant?.lastname || ""} ${c.infant?.first_name || ""}`.toLowerCase();
-      const nameRev = `${c.infant?.first_name || ""} ${c.infant?.lastname || ""}`.toLowerCase();
+      const name =
+        `${c.infant?.lastname || ""} ${c.infant?.first_name || ""}`.toLowerCase();
+      const nameRev =
+        `${c.infant?.first_name || ""} ${c.infant?.lastname || ""}`.toLowerCase();
       return title.includes(q) || name.includes(q) || nameRev.includes(q);
     })
     .filter((c) => {
       if (!fromDate && !toDate) return true;
-      const dateField = c.current_state === 2 && c.paid_at ? c.paid_at : c.created_at;
+      const dateField =
+        c.current_state === 2 && c.paid_at ? c.paid_at : c.created_at;
       return isDateInRange(dateField, fromDate, toDate);
     });
 
   const filteredCharges = baseFiltered.filter((c) =>
-    filterState !== null ? c.current_state === filterState : true
+    filterState !== null ? c.current_state === filterState : true,
   );
 
   const pendingCount = baseFiltered.filter((c) => c.current_state === 0).length;
@@ -66,7 +81,7 @@ export default function ChargesTable() {
 
   return (
     <div className="contrasting-background">
-      <h3 className="title">Cargos</h3>
+      <h3 className="text-center module-title">Cargos</h3>
 
       {/* Barra de búsqueda y filtros de fecha */}
       <div className="row mb-2">
@@ -105,6 +120,16 @@ export default function ChargesTable() {
         </div>
       </div>
 
+      {/* Trackers de métricas financieras */}
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <RealIncomeTracker fromDate={fromDate} toDate={toDate} />
+        </div>
+        <div className="col-md-6">
+          <DebtTracker />
+        </div>
+      </div>
+
       {/* Filtro por estado */}
       <Form.Label>
         <FaFilter /> Filtrar por estado
@@ -117,7 +142,7 @@ export default function ChargesTable() {
           <FaClock /> Pendiente ({pendingCount})
         </Button>
         <Button
-          variant={filterState === 1 ? "warning" : "outline-warning"}
+          variant={filterState === 1 ? "primary" : "outline-primary"}
           onClick={() => setFilterState(filterState === 1 ? null : 1)}
         >
           <FaExclamationCircle /> Por verificar ({verifyCount})
@@ -137,7 +162,13 @@ export default function ChargesTable() {
       />
 
       <div style={{ overflowX: "auto" }}>
-        <Table striped bordered hover responsive style={{ textAlign: "center" }}>
+        <Table
+          striped
+          bordered
+          hover
+          responsive
+          style={{ textAlign: "center" }}
+        >
           <thead>
             <tr>
               <th>#</th>
@@ -146,6 +177,7 @@ export default function ChargesTable() {
               <th>Monto</th>
               <th>Emisión / Vencimiento / Pago</th>
               <th>Estado</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -168,6 +200,7 @@ export default function ChargesTable() {
                     <br />
                     {formatDate(charge.paid_at)}
                   </td>
+
                   <td>
                     {getChargeStatus(charge.current_state)}
                     <br />
@@ -177,11 +210,16 @@ export default function ChargesTable() {
                         {capitalizeName(charge.user?.first_name)}
                       </small>
                     )}
-                    {charge.current_state === 1 && charge.paying_user && (
+                    {charge.current_state === 1 && (
                       <small>
-                        Pagó: {capitalizeName(charge.paying_user?.lastname)}{" "}
-                        {capitalizeName(charge.paying_user?.first_name)}
-                        <br />
+                        {charge.payment_method === 1 && charge.user && (
+                          <>
+                            Recibió:{" "}
+                            {capitalizeName(charge.user?.lastname)}{" "}
+                            {capitalizeName(charge.user?.first_name)}
+                            <br />
+                          </>
+                        )}
                         {charge.url_payment_document && (
                           <a
                             href={charge.url_payment_document}
@@ -200,8 +238,7 @@ export default function ChargesTable() {
                     )}
                     {charge.current_state === 2 && (
                       <small>
-                        Verificado por:{" "}
-                        {capitalizeName(charge.user?.lastname)}{" "}
+                        Verificado por: {capitalizeName(charge.user?.lastname)}{" "}
                         {capitalizeName(charge.user?.first_name)}
                         <br />
                         {charge.url_payment_document && (
@@ -220,12 +257,32 @@ export default function ChargesTable() {
                         </span>
                       </small>
                     )}
+                    {charge.paying_user && (
+                      <small>
+                        <br />
+                        Pagó:{" "}
+                        {capitalizeName(charge.paying_user?.lastname)}{" "}
+                        {capitalizeName(charge.paying_user?.first_name)}
+                      </small>
+                    )}
+                  </td>
+                  <td>
+                    <div className="d-flex gap-1 justify-content-center">
+                      <EditCharge charge={charge} />
+                      <RemoveCharge charge={charge} />
+                      {charge.current_state === 0 && (
+                        <DeclareCashPayment charge={charge} />
+                      )}
+                      {charge.current_state === 1 && (
+                        <VerifyPayment charge={charge} />
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="6">No hay cargos registrados</td>
+                <td colSpan="7">No hay cargos registrados</td>
               </tr>
             )}
           </tbody>
@@ -234,4 +291,3 @@ export default function ChargesTable() {
     </div>
   );
 }
-

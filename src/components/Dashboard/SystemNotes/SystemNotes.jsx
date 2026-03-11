@@ -28,6 +28,124 @@ export default function SystemNotes() {
             <h2 className="system-notes-title">Registro de Actualizaciones</h2>
             <ul className="notes-timeline">
               <li className="timeline-item">
+                <span className="timeline-date">11 de Marzo de 2026</span>
+                <ul className="timeline-updates">
+                  <li className="update-item">
+                    <strong>Unificación de salas de 2 y 3 años:</strong> Las
+                    salas "Exploradores (2 años)" (código 3) y "Pequeños
+                    expertos (3 años)" (código 4) se unificaron en una única
+                    sala con código 3, denominada{" "}
+                    <em>Exploradores y Pequeños expertos (2/3 años)</em>. El
+                    código 4 ya no está disponible en el sistema. El cambio se
+                    aplicó en todos los formularios de registro y edición de
+                    infantes, módulo de comunicaciones, lista de infantes en PDF
+                    y en la función utilitaria <code>getRoomName</code>
+                  </li>
+                  <li className="update-item">
+                    <strong>Generación de cargos por sede:</strong> El módulo de
+                    generación de cargos ahora permite seleccionar entre tres
+                    opciones grupales mutuamente excluyentes: <em>Todos</em>,{" "}
+                    <em>Sede Laplace</em> y <em>Sede Docta</em>. Cada opción
+                    muestra el conteo de niños activos correspondiente. Al
+                    marcar una opción grupal se oculta el buscador individual y
+                    se genera un cargo para cada niño del grupo seleccionado
+                  </li>
+                  <li className="update-item">
+                    <strong>Botón de hora extra en el cronograma:</strong> El
+                    botón "Agregar hora extra" se incorporó al dashboard del
+                    personal, ubicado a la derecha por encima del cronograma de
+                    asistencia y debajo del buscador por nombre
+                  </li>
+                  <li className="update-item">
+                    <strong>
+                      Declaración de pago con selección de cargos:
+                    </strong>{" "}
+                    Los padres ahora pueden elegir qué cargos quieren declarar
+                    mediante checkboxes individuales. El total se actualiza en
+                    tiempo real según los cargos seleccionados. Si un cargo
+                    contiene la palabra "cuota", se muestra una leyenda
+                    informando el 5% de descuento por pago en efectivo entre el
+                    1° y el 5° de cada mes, con el valor con descuento ya
+                    calculado
+                  </li>
+                  <li className="update-item">
+                    <strong>
+                      Permisos de acceso al módulo de Administración:
+                    </strong>{" "}
+                    Se corrigieron y refinaron los permisos de acceso al módulo
+                    de Administración. El módulo ahora solo es visible para los
+                    usuarios con los permisos correspondientes, tanto en el
+                    dashboard como en la barra de navegación
+                  </li>
+                  <li className="update-item">
+                    <strong>Declarar efectivo recibido:</strong> Nueva función
+                    en el dashboard del personal (junto al botón de hora extra)
+                    que permite registrar el cobro en efectivo de uno o varios
+                    cargos pendientes de un infante en un único flujo. Se busca
+                    al infante, se selecciona quién entregó el efectivo entre
+                    los familiares vinculados al niño, se marcan los cargos a
+                    declarar y al confirmar cada uno pasa al estado{" "}
+                    <em>Por verificar</em> con método de pago <em>Efectivo</em>,
+                    registrando tanto quien recibió (usuario autenticado) como
+                    quien pagó (familiar seleccionado)
+                  </li>
+                  <li className="update-item">
+                    <strong>
+                      Tabla de cargos — detalle de pago en efectivo:
+                    </strong>{" "}
+                    Los cargos con método de pago en efectivo ahora muestran dos
+                    líneas diferenciadas: <em>Recibió</em> (el usuario del
+                    sistema que registró el cobro) y <em>Pagó</em> (el familiar
+                    vinculado al niño que entregó el dinero)
+                  </li>
+                </ul>
+              </li>
+              <li className="timeline-item">
+                <span className="timeline-date">9 de Marzo de 2026</span>
+                <ul className="timeline-updates">
+                  <li className="update-item">
+                    <strong>Cronograma de Asistencia:</strong> Nuevo componente
+                    en el dashboard del personal que muestra los horarios de
+                    entrada y salida de todos los niños activos organizados por
+                    franja horaria. Filtra por sede (Laplace / Docta) con
+                    contador de niños por sede, incluye barra de búsqueda con
+                    normalización de texto (sin distinción de tildes) y
+                    navegación entre días de la semana iniciando en el día
+                    actual
+                  </li>
+                  <li className="update-item">
+                    <strong>Módulo de Administración Financiera:</strong> Panel
+                    completo de gestión de cargos con tabla unificada, filtros
+                    por estado (pendiente, por verificar, pagado), búsqueda por
+                    concepto o nombre, rango de fechas, paginación y métricas de
+                    ingresos reales y deuda total
+                  </li>
+                  <li className="update-item">
+                    <strong>Estado de Cuenta para Padres:</strong> Módulo
+                    exclusivo para padres y tutores con tabla paginada (10 por
+                    página) que muestra todos los cargos de sus hijos —
+                    pendientes, en verificación y pagados — en una sola vista,
+                    identificando quién realizó cada pago y el método utilizado
+                  </li>
+                  <li className="update-item">
+                    <strong>Declaración de Pago:</strong> Los padres y tutores
+                    pueden declarar el pago de un cargo adjuntando el
+                    comprobante, seleccionando el método de pago y subiendo el
+                    documento a Google Drive. El cargo pasa al estado "por
+                    verificar" hasta que el personal lo confirme
+                  </li>
+                  <li className="update-item">
+                    <strong>
+                      Almacenamiento de Comprobantes en Google Drive:
+                    </strong>{" "}
+                    Integración con la API de Google Drive para guardar los
+                    comprobantes de pago subidos por los padres, con enlace
+                    directo al archivo desde la tabla de cargos del panel
+                    administrativo
+                  </li>
+                </ul>
+              </li>
+              <li className="timeline-item">
                 <span className="timeline-date">19 de Febrero de 2026</span>
                 <ul className="timeline-updates">
                   <li className="update-item">
@@ -49,9 +167,8 @@ export default function SystemNotes() {
                 <ul className="timeline-updates">
                   <li className="update-item">
                     <strong>Tarifas con Tipo de Infante:</strong> Se agregó la
-                    propiedad "infant_type" a las tarifas para diferenciar
-                    entre tarifa regular y tarifa para bebés/lactantes (Sala de
-                    bebé)
+                    propiedad "infant_type" a las tarifas para diferenciar entre
+                    tarifa regular y tarifa para bebés/lactantes (Sala de bebé)
                   </li>
                   <li className="update-item">
                     <strong>Selector de Tipo de Infante:</strong> Los
@@ -78,8 +195,8 @@ export default function SystemNotes() {
                   <li className="update-item">
                     <strong>Visualización de Imágenes:</strong> Las imágenes de
                     los comunicados se muestran con un borde decorativo en
-                    colores del jardín tanto en la pizarra
-                    como en la vista detallada
+                    colores del jardín tanto en la pizarra como en la vista
+                    detallada
                   </li>
                   <li className="update-item">
                     <strong>Carrusel Optimizado:</strong> Las flechas de

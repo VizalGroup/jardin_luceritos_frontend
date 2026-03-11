@@ -1326,6 +1326,8 @@ export const PostCharge = (atributos) => {
 };
 
 export const UpdateCharge = (id, atributos) => {
+  console.log(atributos);
+  
   return async function (dispatch) {
     try {
       var f = new FormData();
@@ -1347,8 +1349,9 @@ export const UpdateCharge = (id, atributos) => {
           ? atributos.url_payment_document
           : "",
       );
-
+      
       var response = await axios.post(chargesURL, f, { params: { id: id } });
+      console.log(response.data);
       return dispatch({
         type: UPDATE_CHARGE,
         payload: response.data,

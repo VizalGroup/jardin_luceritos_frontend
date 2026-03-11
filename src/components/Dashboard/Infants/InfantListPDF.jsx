@@ -31,8 +31,7 @@ export default function InfantListPDF() {
     { code: 0, name: "Desconocida" },
     { code: 1, name: "Semillitas (bebés)" },
     { code: 2, name: "Primeros pasos (1 año)" },
-    { code: 3, name: "Exploradores (2 años)" },
-    { code: 4, name: "Pequeños expertos (3 años)" },
+    { code: 3, name: "Exploradores y Pequeños expertos (2/3 años)" },
   ];
 
   const handleOpenModal = () => {

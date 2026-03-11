@@ -2,17 +2,21 @@ import { useEffect } from "react";
 import NavBarDB from "../NavBarDB";
 import BackButton from "../../BackButton";
 import { useDispatch } from "react-redux";
-import { GetCharges, GetFamilyRelationships, GetInfants } from "../../../redux/actions";
+import {
+  GetCharges,
+  GetFamilyRelationships,
+  GetInfants,
+} from "../../../redux/actions";
 import AddCharge from "./AddCharge";
 import GenerateQuotas from "./GenerateQuotas";
 import ChargesTable from "./ChargesTable";
+import BulkWhatsAppReminder from "./BulkWhatsAppReminder";
 
 export default function Administration() {
   document.title = "Administración - Jardín Luceritos";
   const dispatch = useDispatch();
-  
 
-    useEffect(() => {
+  useEffect(() => {
     dispatch(GetInfants());
     dispatch(GetCharges());
     dispatch(GetFamilyRelationships());
@@ -26,6 +30,7 @@ export default function Administration() {
           <BackButton />
           <AddCharge />
           <GenerateQuotas />
+          <BulkWhatsAppReminder />
         </div>
         <ChargesTable />
       </div>

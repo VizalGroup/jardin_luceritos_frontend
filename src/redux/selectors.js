@@ -226,3 +226,9 @@ export const selectChargesOrderedById = createSelector(
   [selectCharges],
   (charges) => [...charges].sort((a, b) => b.id - a.id)
 );
+
+// Cargos ordenados por id con current_state 0 (pendientes)
+export const selectPendingChargesOrderedById = createSelector(
+  [selectChargesOrderedById],
+  (charges) => charges.filter((c) => c.current_state === 0)
+);

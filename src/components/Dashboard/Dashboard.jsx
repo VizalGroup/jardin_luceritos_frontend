@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   FaStickyNote,
   FaUser,
@@ -6,12 +7,12 @@ import {
   FaDollarSign,
   FaEnvelope,
   FaBookOpen,
+  FaFileInvoiceDollar,
 } from "react-icons/fa";
 import NavBarDB from "./NavBarDB";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { canManageSystem } from "../../utils";
+import { canManageSystem, normalizeText, canAccessAdministration } from "../../utils";
 import {
   GetTariffs,
   GetUserDetail,
@@ -23,12 +24,19 @@ import {
   GetUsers,
   GetConversations,
   GetChatMessages,
+  GetCharges,
 } from "../../redux/actions";
 import AddMySon from "./AddMySon";
 import MyChildren from "./MyChildren";
 import CommunicationBoard from "./CommunicationBoard/CommunicationBoard";
 import ParentCommunication from "./ParentCommunication";
 import FloatingChatButton from "./Chat/FloatingChatButton";
+import DeclarePayment from "./DeclarePayment";
+import AttendanceSchedule from "./Infants/AttendanceSchedule";
+import AddExtraHour from "./AddExtraHour";
+import DeclareCashReceived from "./DeclareCashReceived";
+import { selectActiveInfantsOrderedByLastName } from "../../redux/selectors";
+import SearchBar from "../SearchBar";
 
 export default function Dashboard() {
   document.title = "Autogestión - Luceritos Jardín Maternal";
@@ -37,7 +45,18 @@ export default function Dashboard() {
   const authenticatedUser = useSelector((state) => state.authenticatedUser);
   const userDetail = useSelector((state) => state.userDetail);
   const infants = useSelector((state) => state.infants);
+  const activeInfants = useSelector(selectActiveInfantsOrderedByLastName);
   const familyLinks = useSelector((state) => state.family_relationships);
+
+  const [scheduleSearch, setScheduleSearch] = useState("");
+
+  const filteredScheduleInfants = activeInfants.filter((infant) => {
+    if (!scheduleSearch) return true;
+    const q = normalizeText(scheduleSearch);
+    const full = normalizeText(`${infant.lastname || ""} ${infant.first_name || ""}`);
+    const fullRev = normalizeText(`${infant.first_name || ""} ${infant.lastname || ""}`);
+    return full.includes(q) || fullRev.includes(q);
+  });
 
   // Verificar si es padre/madre/tutor (rol 3)
   const isParent = authenticatedUser?.user_role === 3;
@@ -78,17 +97,19 @@ export default function Dashboard() {
       dispatch(GetUsers());
       dispatch(GetConversations());
       dispatch(GetChatMessages());
+      dispatch(GetCharges());
     }
   }, [authenticatedUser, dispatch, navigate]);
 
   // Array de módulos según el rol (ordenados alfabéticamente)
-  const modules = canManageSystem(authenticatedUser?.user_role)
+  const allModules = canManageSystem(authenticatedUser?.user_role)
     ? [
         {
           key: "administration",
           path: "/autogestion/administracion",
           icon: FaBookOpen,
           text: "Administración",
+          adminOnly: true,
         },
         {
           key: "communications",
@@ -122,6 +143,12 @@ export default function Dashboard() {
         },
       ]
     : [];
+
+  const modules = allModules.filter(
+    (m) =>
+      !m.adminOnly ||
+      canAccessAdministration(authenticatedUser?.user_role, authenticatedUser?.id)
+  );
 
   if (!authenticatedUser) {
     return null;
@@ -227,12 +254,49 @@ export default function Dashboard() {
               </>
             )}
 
+            {/* Módulo Estado de Cuenta */}
+            <div className="admin-panel">
+              <div className="admin-button-container">
+                <a href="/autogestion/mi_estado_de_cuenta" className="module-link">
+                  <button
+                    className="btn btn-lg admin-button"
+                    style={{
+                      backgroundColor: "#213472",
+                      color: "#FFFFFF",
+                      border: "2px solid #213472",
+                      fontFamily:
+                        "georgia, palatino, 'book antiqua', 'palatino linotype', serif",
+                      fontWeight: "600",
+                      padding: "15px 30px",
+                      margin: "10px",
+                      transition: "all 0.3s ease",
+                      minWidth: "250px",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = "translateY(-3px)";
+                      e.target.style.boxShadow = "0 8px 20px rgba(33, 52, 114, 0.4)";
+                      e.target.style.backgroundColor = "#1a2859";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = "translateY(0)";
+                      e.target.style.boxShadow = "none";
+                      e.target.style.backgroundColor = "#213472";
+                    }}
+                  >
+                    <FaFileInvoiceDollar style={{ marginRight: "10px" }} />
+                    <span>Mi Estado de Cuenta</span>
+                  </button>
+                </a>
+              </div>
+            </div>
+
             {/* Carrusel de comunicados - solo si tiene hijos vinculados */}
             {myChildren.length > 0 && <CommunicationBoard />}
 
             <MyChildren />
             <AddMySon />
             <ParentCommunication />
+            <DeclarePayment />
           </div>
         ) : (
           // Vista para administradores/personal (roles 0, 1, 2)
@@ -283,6 +347,18 @@ export default function Dashboard() {
             <div style={{ marginTop: "60px" }}>
               <CommunicationBoard />
             </div>
+
+            {/* Cronograma de asistencia */}
+            <SearchBar
+              searchTerm={scheduleSearch}
+              setSearchTerm={setScheduleSearch}
+              placeholder="Buscar niño por nombre o apellido..."
+            />
+            <div className="d-flex justify-content-end gap-2" style={{ marginBottom: "12px" }}>
+              <AddExtraHour />
+              <DeclareCashReceived />
+            </div>
+            <AttendanceSchedule infants={filteredScheduleInfants} />
           </>
         )}
       </div>

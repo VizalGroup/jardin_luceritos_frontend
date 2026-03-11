@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { LogoutUser } from "../../redux/actions";
-import { canManageSystem } from "../../utils";
+import { canManageSystem, canAccessAdministration } from "../../utils";
 import {
   FaAddressCard,
   FaDoorOpen,
@@ -12,6 +12,7 @@ import {
   FaEnvelope,
   FaHistory,
   FaBookOpen,
+  FaFileInvoiceDollar,
 } from "react-icons/fa";
 
 export default function NavBarDB() {
@@ -26,6 +27,11 @@ export default function NavBarDB() {
   // Verificar si el usuario puede gestionar el sistema
   const canAccessManagement =
     authenticatedUser && canManageSystem(authenticatedUser.user_role);
+
+  // Verificar si puede ver el módulo de Administración
+  const showAdministration =
+    authenticatedUser &&
+    canAccessAdministration(authenticatedUser.user_role, authenticatedUser.id);
 
   // Verificar si es padre/madre/tutor
   const isParent = authenticatedUser?.user_role === 3;
@@ -92,6 +98,14 @@ export default function NavBarDB() {
                       <FaHistory /> Historial de Comunicaciones
                     </a>
                   </li>
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
+                  <li className="nav-item">
+                    <a className="nav-link" href="/autogestion/mi_estado_de_cuenta">
+                      <FaFileInvoiceDollar /> Mi Estado de Cuenta
+                    </a>
+                  </li>
                 </>
               )}
 
@@ -102,22 +116,26 @@ export default function NavBarDB() {
                     <hr className="dropdown-divider" />
                   </li>
 
-                  <li className="nav-item">
-                    <a className="nav-link" href="/autogestion/administracion">
-                      <FaBookOpen /> Administración
-                    </a>
-                  </li>
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="/autogestion/comunicaciones">
-                      <FaEnvelope /> Comunicaciones
-                    </a>
-                  </li>
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
+                  {showAdministration && (
+                    <>
+                      <li className="nav-item">
+                        <a className="nav-link" href="/autogestion/administracion">
+                          <FaBookOpen /> Administración
+                        </a>
+                      </li>
+                      <li>
+                        <hr className="dropdown-divider" />
+                      </li>
+                    </>
+                  )}
+                     <li className="nav-item">
+                      <a className="nav-link" href="/autogestion/comunicaciones">
+                        <FaEnvelope /> Comunicaciones
+                      </a>
+                    </li>
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
                   <li className="nav-item">
                     <a className="nav-link" href="/autogestion/infantes">
                       <FaChild /> Infantes

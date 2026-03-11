@@ -18,6 +18,7 @@ import Communications from "./components/Dashboard/Communications/Communications
 import CommunicationHistory from "./components/Dashboard/Communications/CommunicationHistory";
 import Chats from "./components/Dashboard/Communications/Chats/Chats";
 import Administration from "./components/Dashboard/Administration/Administration";
+import AccountStatement from "./components/Dashboard/AccountStatement/AccountStatement";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
       <Route path="/autogestion/comunicaciones/chats" element={<Chats />} />
       <Route path="/autogestion/historial-comunicaciones" element={<CommunicationHistory />} />
       <Route path="/autogestion/administracion" element={<Administration />} />
+      <Route path="/autogestion/mi_estado_de_cuenta" element={<AccountStatement />} />
      </Routes>
     </>
   )

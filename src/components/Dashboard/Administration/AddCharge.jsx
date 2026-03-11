@@ -32,10 +32,14 @@ export default function AddCharge() {
   const dispatch = useDispatch();
   const authenticatedUser = useSelector((state) => state.authenticatedUser);
   const infants = useSelector(selectActiveInfantsOrderedByLastName);
+  const infantsLaplace = infants.filter((i) => parseInt(i.location) === 0);
+  const infantsDocta = infants.filter((i) => parseInt(i.location) === 1);
   const [formData, setFormData] = useState(chargeFormData);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [forAll, setForAll] = useState(false);
+  const [forLaplace, setForLaplace] = useState(false);
+  const [forDocta, setForDocta] = useState(false);
 
   // Estados para el buscador
   const [searchQuery, setSearchQuery] = useState("");
@@ -68,6 +72,8 @@ export default function AddCharge() {
       setShowDropdown(false);
       setSelectedInfantName("");
       setForAll(false);
+      setForLaplace(false);
+      setForDocta(false);
     }
   }, [showModal]);
 
@@ -104,8 +110,8 @@ export default function AddCharge() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!forAll && (!formData.id_infant || formData.id_infant === "")) {
-      alert("Debe seleccionar un infante o marcar 'Todos'");
+    if (!forAll && !forLaplace && !forDocta && (!formData.id_infant || formData.id_infant === "")) {
+      alert("Debe seleccionar un infante o marcar una de las opciones grupales");
       return;
     }
 
@@ -118,8 +124,16 @@ export default function AddCharge() {
         current_state: 0,
       };
 
-      if (forAll) {
-        for (const infant of infants) {
+      const targetInfants = forAll
+        ? infants
+        : forLaplace
+        ? infantsLaplace
+        : forDocta
+        ? infantsDocta
+        : null;
+
+      if (targetInfants) {
+        for (const infant of targetInfants) {
           await dispatch(PostCharge({ ...baseData, id_infant: infant.id }));
         }
       } else {
@@ -129,11 +143,14 @@ export default function AddCharge() {
       await dispatch(GetCharges());
       setShowModal(false);
       setFormData(chargeFormData);
-      alert(
-        forAll
-          ? `Cargo generado para ${infants.length} infantes correctamente`
-          : "Cargo generado correctamente"
-      );
+      const successMsg = forAll
+        ? `Cargo generado para ${infants.length} infantes correctamente`
+        : forLaplace
+        ? `Cargo generado para ${infantsLaplace.length} infantes de Sede Laplace correctamente`
+        : forDocta
+        ? `Cargo generado para ${infantsDocta.length} infantes de Sede Docta correctamente`
+        : "Cargo generado correctamente";
+      alert(successMsg);
     } catch (error) {
       alert("Error al generar cargo: " + error.message);
     } finally {
@@ -153,8 +170,8 @@ export default function AddCharge() {
         </Modal.Header>
         <Form onSubmit={handleSubmit}>
           <Modal.Body>
-            {/* Buscador de infante (oculto si es "Todos") */}
-            {!forAll && (
+            {/* Buscador de infante (oculto si se elige opción grupal) */}
+            {!forAll && !forLaplace && !forDocta && (
               <Form.Group>
                 <Form.Label>
                   <FaChild /> Infante
@@ -222,7 +239,7 @@ export default function AddCharge() {
               </Form.Group>
             )}
 
-            {/* Checkbox Todos — debajo del buscador */}
+            {/* Checkboxes grupales */}
             <Form.Group className="mt-2 mb-1">
               <Form.Check
                 type="checkbox"
@@ -231,14 +248,44 @@ export default function AddCharge() {
                 onChange={(e) => {
                   setForAll(e.target.checked);
                   if (e.target.checked) {
+                    setForLaplace(false);
+                    setForDocta(false);
                     setSelectedInfantName("");
                     setFormData({ ...formData, id_infant: "" });
                   }
                 }}
               />
-              {forAll && (
+              <Form.Check
+                type="checkbox"
+                label={`Sede Laplace (${infantsLaplace.length})`}
+                checked={forLaplace}
+                onChange={(e) => {
+                  setForLaplace(e.target.checked);
+                  if (e.target.checked) {
+                    setForAll(false);
+                    setForDocta(false);
+                    setSelectedInfantName("");
+                    setFormData({ ...formData, id_infant: "" });
+                  }
+                }}
+              />
+              <Form.Check
+                type="checkbox"
+                label={`Sede Docta (${infantsDocta.length})`}
+                checked={forDocta}
+                onChange={(e) => {
+                  setForDocta(e.target.checked);
+                  if (e.target.checked) {
+                    setForAll(false);
+                    setForLaplace(false);
+                    setSelectedInfantName("");
+                    setFormData({ ...formData, id_infant: "" });
+                  }
+                }}
+              />
+              {(forAll || forLaplace || forDocta) && (
                 <Form.Text className="text-muted">
-                  Esto creará un cargo vinculado a todos los niños. Marcá esta opción para generar cargos únicos como matrículas, materiales didácticos, etc.
+                  Esto creará un cargo vinculado a cada niño del grupo seleccionado. Útil para matrículas, materiales didácticos, etc.
                 </Form.Text>
               )}
             </Form.Group>

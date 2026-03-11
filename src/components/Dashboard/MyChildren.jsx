@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Card } from "react-bootstrap";
 import { 
   FaChild, 
@@ -12,21 +11,20 @@ import {
   FaCalendarAlt,
   FaDollarSign,
   FaSchool,
-  FaMapMarkerAlt
+  FaMapMarkerAlt,
+  FaFileInvoiceDollar,
 } from "react-icons/fa";
-import { GetInfants, GetFamilyRelationships } from "../../redux/actions";
+
 import { capitalizeName, formatDate, calculateAge, formatDNI, formatCurrency, getRoomName, getLocationName } from "../../utils";
+import { selectPendingChargesOrderedById } from "../../redux/selectors";
 
 export default function MyChildren() {
-  const dispatch = useDispatch();
   const authenticatedUser = useSelector((state) => state.authenticatedUser);
   const infants = useSelector((state) => state.infants);
   const familyLinks = useSelector((state) => state.family_relationships);
-
-  useEffect(() => {
-    dispatch(GetInfants());
-    dispatch(GetFamilyRelationships());
-  }, [dispatch]);
+  console.log(familyLinks);
+  
+  const charges = useSelector(selectPendingChargesOrderedById);
 
   // Filtrar los hijos del usuario actual
   const myChildren = familyLinks
@@ -64,25 +62,6 @@ export default function MyChildren() {
       default:
         return null;
     }
-  };
-
-  // Función para formatear el horario
-  const formatSchedule = (schedule) => {
-    if (!schedule) return "Sin horario definido";
-
-    const daysOfWeek = [
-      { en: "Monday", es: "Lun" },
-      { en: "Tuesday", es: "Mar" },
-      { en: "Wednesday", es: "Mié" },
-      { en: "Thursday", es: "Jue" },
-      { en: "Friday", es: "Vie" },
-    ];
-
-    const activeDays = daysOfWeek
-      .filter((day) => schedule[day.en] && schedule[day.en].entry && schedule[day.en].exit)
-      .map((day) => day.es);
-
-    return activeDays.length > 0 ? activeDays.join(", ") : "Sin horario definido";
   };
 
   const dayTranslations = {
@@ -225,6 +204,49 @@ export default function MyChildren() {
                     </div>
                   </div>
                 )}
+
+                {/* Cargos pendientes */}
+                {(() => {
+                  const pendingCharges = charges.filter(
+                    (c) => c.id_infant === child.id
+                  );
+                  if (pendingCharges.length === 0) return null;
+                  return (
+                    <div className="col-12 mt-2">
+                      <div className="d-flex align-items-center gap-1 mb-1">
+                        <FaFileInvoiceDollar style={{ color: "#213472" }} size={12} />
+                        <small className="text-muted fw-semibold">Cargos pendientes</small>
+                        <span
+                          className="badge rounded-pill ms-auto"
+                          style={{ backgroundColor: "#dc3545", fontSize: "0.7rem" }}
+                        >
+                          {pendingCharges.length}
+                        </span>
+                      </div>
+                      <div className="ms-1">
+                        {pendingCharges.map((charge, idx) => (
+                          <div
+                            key={charge.id}
+                            className="d-flex justify-content-between align-items-baseline py-1"
+                            style={{
+                              fontSize: "0.78rem",
+                              borderBottom: idx < pendingCharges.length - 1 ? "1px solid #f0f0f0" : "none",
+                            }}
+                          >
+                            <div>
+                              <span className="fw-semibold text-dark">{charge.charge_title}</span>
+                              <br />
+                              <span className="text-muted">Vence: {formatDate(charge.due_date)}</span>
+                            </div>
+                            <span className="fw-bold  ms-2" style={{ whiteSpace: "nowrap" }}>
+                              {formatCurrency(charge.amount)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* Alerta de pendiente */}
                 {child.current_state === 2 && (
