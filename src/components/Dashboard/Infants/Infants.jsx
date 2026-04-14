@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import BackButton from "../../BackButton";
 import { useDispatch, useSelector } from "react-redux";
-import { GetFamilyRelationships, GetInfants, GetTariffs, GetUsers } from "../../../redux/actions";
+import { GetFamilyRelationships, GetInfants, GetTariffs, GetUsers, GetMedicalDocuments } from "../../../redux/actions";
 import { selectInfantsOrderedByLastName } from "../../../redux/selectors";
 import NavBarDB from "../NavBarDB";
 import AddInfant from "./AddInfant";
@@ -20,6 +20,7 @@ export default function Infants() {
     dispatch(GetTariffs());
     dispatch(GetFamilyRelationships());
     dispatch(GetUsers());
+    dispatch(GetMedicalDocuments());
   }, [dispatch]);
 
   return (

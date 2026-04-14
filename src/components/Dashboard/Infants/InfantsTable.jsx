@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { Table, ButtonGroup, Button } from "react-bootstrap";
 import {
   FaChild,
@@ -9,6 +10,7 @@ import {
   FaReceipt,
   FaUserEdit,
   FaSchool,
+  FaFileMedical,
 } from "react-icons/fa";
 import Pagination from "../../Pagination";
 import {
@@ -20,9 +22,12 @@ import {
   formatDNI,
   getRoomName,
   getLocationName,
+  getMedicalDocumentType,
 } from "../../../utils";
 import EditInfant from "./EditInfant";
 import LinkFamily from "./LinkFamily";
+import AddMedicalDocument from "./AddMedicalDocument";
+import MedicalDocumentDetail from "./MedicalDocumentDetail";
 
 // Función para formatear números eliminando los .00
 const formatNumber = (number) => {
@@ -116,6 +121,7 @@ const formatWeeklySchedule = (schedule) => {
 export default function InfantsTable({ infants, searchTerm }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState("1");
+  const medicalDocuments = useSelector((state) => state.medical_documents);
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -220,18 +226,45 @@ export default function InfantsTable({ infants, searchTerm }) {
             <tr>
               <th>
                 <FaChild title="Apellido y nombre" /> Nombre
-              </th>
-              <th>
-                <FaIdCard title="Documento / Pasaporte" /> Documento
+                <br />
+                <span
+                  style={{
+                    fontWeight: "normal",
+                    fontSize: "0.8em",
+                    color: "#888",
+                  }}
+                >
+                  <FaIdCard /> Documento
+                </span>
               </th>
               <th>
                 <FaBirthdayCake title="Fecha de Nacimiento" /> Nacimiento
               </th>
               <th>
                 <FaMapMarkerAlt title="Sede / Sala" /> Sede / Sala
+                <br />
+                <span
+                  style={{
+                    fontWeight: "normal",
+                    fontSize: "0.8em",
+                    color: "#888",
+                  }}
+                >
+                  <FaClock /> Horario / Tarifa
+                </span>
               </th>
               <th>
-                <FaClock title="Horario / Tarifa" /> Horario / Tarifa
+                <FaFileMedical title="Documentos médicos" /> Documentos médicos
+                <br />
+                <span
+                  style={{
+                    fontWeight: "normal",
+                    fontSize: "0.8em",
+                    color: "#888",
+                  }}
+                >
+                  Click para ver más
+                </span>
               </th>
               <th>
                 <FaUserEdit title="Última actualización" /> Última actualización
@@ -247,10 +280,13 @@ export default function InfantsTable({ infants, searchTerm }) {
 
                 return (
                   <tr key={infant.id}>
-                    <td>{`${capitalizeName(infant.lastname)}, ${capitalizeName(
-                      infant.first_name,
-                    )}`}</td>
-                    <td>{formatDNI(infant.document_number) || "N/A"}</td>
+                    <td>
+                      {`${capitalizeName(infant.lastname)}, ${capitalizeName(infant.first_name)}`}
+                      <br />
+                      <span style={{ fontSize: "0.85em", color: "gray" }}>
+                        {formatDNI(infant.document_number) || "Sin DNI"}
+                      </span>
+                    </td>
                     <td>
                       {formatDate(infant.birthdate)}
                       <br />
@@ -275,7 +311,7 @@ export default function InfantsTable({ infants, searchTerm }) {
                           alignItems: "center",
                           justifyContent: "center",
                           gap: "5px",
-                          marginTop: "5px",
+                          marginTop: "3px",
                         }}
                       >
                         <FaSchool style={{ color: "#666" }} title="Sala" />
@@ -283,16 +319,12 @@ export default function InfantsTable({ infants, searchTerm }) {
                           {getRoomName(infant.room)}
                         </span>
                       </div>
-                    </td>
-                    <td
-                      style={{
-                        fontSize: "0.85em",
-                        whiteSpace: "pre-line",
-                        lineHeight: "1.3",
-                      }}
-                    >
-                      {scheduleDisplay}
-
+                      <hr style={{ margin: "4px 0" }} />
+                      <div
+                        style={{ whiteSpace: "pre-line", lineHeight: "1.3" }}
+                      >
+                        {scheduleDisplay}
+                      </div>
                       <div
                         style={{
                           color:
@@ -300,6 +332,7 @@ export default function InfantsTable({ infants, searchTerm }) {
                             parseFloat(infant.tariff.number_of_hours) === 0
                               ? "green"
                               : "black",
+                          marginTop: "3px",
                         }}
                       >
                         <FaReceipt
@@ -311,14 +344,14 @@ export default function InfantsTable({ infants, searchTerm }) {
                                 : "#213472",
                           }}
                         />
-
                         {infant.tariff &&
                         parseFloat(infant.tariff.number_of_hours) === 0 ? (
-                          "Becado/a"
+                          " Becado/a"
                         ) : (
                           <>
                             <span>
-                              {" "}{formatCurrency(
+                              {" "}
+                              {formatCurrency(
                                 infant.tariff ? infant.tariff.price : 0,
                               )}
                             </span>
@@ -341,6 +374,35 @@ export default function InfantsTable({ infants, searchTerm }) {
                         )}
                       </div>
                     </td>
+                    <td>
+                      {medicalDocuments.filter(
+                        (doc) => doc.id_infant === infant.id,
+                      ).length > 0 ? (
+                        <ol
+                          style={{
+                            margin: 0,
+                            paddingLeft: "1.2rem",
+                            textAlign: "left",
+                          }}
+                        >
+                          {[...medicalDocuments]
+                            .filter((doc) => doc.id_infant === infant.id)
+                            .sort(
+                              (a, b) =>
+                                parseInt(a.file_type) - parseInt(b.file_type),
+                            )
+                            .map((doc) => (
+                              <li key={doc.id}>
+                                <MedicalDocumentDetail doc={doc} />
+                              </li>
+                            ))}
+                        </ol>
+                      ) : (
+                        <span style={{ color: "gray", fontSize: "0.85em" }}>
+                          Sin documentos
+                        </span>
+                      )}
+                    </td>
                     <td style={{ fontSize: "0.85em" }}>
                       {`${infant.user ? capitalizeName(infant.user.first_name) : ""} ${
                         infant.user ? capitalizeName(infant.user.lastname) : ""
@@ -358,6 +420,7 @@ export default function InfantsTable({ infants, searchTerm }) {
                       >
                         <EditInfant infant={infant} />
                         <LinkFamily infant={infant} />
+                        <AddMedicalDocument infant={infant} />
                       </div>
                     </td>
                   </tr>
@@ -365,7 +428,7 @@ export default function InfantsTable({ infants, searchTerm }) {
               })
             ) : (
               <tr>
-                <td colSpan="7">No se encontraron registros</td>
+                <td colSpan="6">No se encontraron registros</td>
               </tr>
             )}
           </tbody>

@@ -27,8 +27,6 @@ import RealIncomeTracker from "./RealIncomeTracker";
 
 export default function ChargesTable() {
   const charges = useSelector(selectChargesOrderedById);
-  console.log(charges);
-  
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
   const [filterState, setFilterState] = useState(null);
@@ -186,7 +184,7 @@ export default function ChargesTable() {
                 <tr key={charge.id}>
                   <td>{charge.id}</td>
                   <td>
-                    {charge.charge_title}
+                    {capitalizeName(charge.charge_title)}
                     <br />
                     {capitalizeName(charge.infant?.lastname)}{" "}
                     {capitalizeName(charge.infant?.first_name)}

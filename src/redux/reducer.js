@@ -21,6 +21,18 @@ const initialState = {
   chat_messageDetail: [],
   charges: [],
   charge_detail: [],
+  expenseCategories: [],
+  expenseCategoryDetail: [],
+  suppliers: [],
+  supplierDetail: [],
+  expenses: [],
+  expenseDetail: [],
+  medical_documents: [],
+  medical_documentDetail: [],
+  authorized_persons: [],
+  authorized_personDetail: [],
+  authorized_person_infant_links: [],
+  authorized_person_infant_linkDetail: [],
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -340,6 +352,200 @@ const rootReducer = (state = initialState, action) => {
         charges: state.charges.filter((item) => item.id !== action.payload),
       };
 
+    case "GET_EXPENSE_CATEGORIES":
+      return {
+        ...state,
+        expenseCategories: action.payload,
+      };
+
+    case "GET_ID_EXPENSE_CATEGORY":
+      return {
+        ...state,
+        expenseCategoryDetail: action.payload,
+      };
+
+    case "POST_EXPENSE_CATEGORY":
+      return {
+        ...state,
+      };
+
+    case "UPDATE_EXPENSE_CATEGORY":
+      return {
+        ...state,
+        expenseCategories: state.expenseCategories.map((item) => {
+          return item.id === action.payload.id ? action.payload : item;
+        }),
+      };
+
+    case "DELETE_EXPENSE_CATEGORY":
+      return {
+        ...state,
+        expenseCategories: state.expenseCategories.filter(
+          (item) => item.id !== action.payload,
+        ),
+      };
+
+    case "GET_SUPPLIERS":
+      return {
+        ...state,
+        suppliers: action.payload,
+      };
+
+    case "GET_ID_SUPPLIER":
+      return {
+        ...state,
+        supplierDetail: action.payload,
+      };
+
+    case "POST_SUPPLIER":
+      return {
+        ...state,
+      };
+
+    case "UPDATE_SUPPLIER":
+      return {
+        ...state,
+        suppliers: state.suppliers.map((item) => {
+          return item.id === action.payload.id ? action.payload : item;
+        }),
+      };
+
+    case "DELETE_SUPPLIER":
+      return {
+        ...state,
+        suppliers: state.suppliers.filter((item) => item.id !== action.payload),
+      };
+
+    case "GET_EXPENSES":
+      return {
+        ...state,
+        expenses: action.payload,
+      };
+
+    case "GET_ID_EXPENSE":
+      return {
+        ...state,
+        expenseDetail: action.payload,
+      };
+
+    case "POST_EXPENSE":
+      return {
+        ...state,
+      };
+
+    case "UPDATE_EXPENSE":
+      return {
+        ...state,
+        expenses: state.expenses.map((item) => {
+          return item.id === action.payload.id ? action.payload : item;
+        }),
+      };
+
+    case "DELETE_EXPENSE":
+      return {
+        ...state,
+        expenses: state.expenses.filter((item) => item.id !== action.payload),
+      };
+
+    case "GET_MEDICAL_DOCUMENTS":
+      return {
+        ...state,
+        medical_documents: action.payload,
+      };
+
+    case "GET_ID_MEDICAL_DOCUMENT":
+      return {
+        ...state,
+        medical_documentDetail: action.payload,
+      };
+
+    case "POST_MEDICAL_DOCUMENT":
+      return {
+        ...state,
+      };
+
+    case "UPDATE_MEDICAL_DOCUMENT":
+      return {
+        ...state,
+        medical_documents: state.medical_documents.map((item) => {
+          return item.id === action.payload.id ? action.payload : item;
+        }),
+      };
+
+    case "DELETE_MEDICAL_DOCUMENT":
+      return {
+        ...state,
+        medical_documents: state.medical_documents.filter(
+          (item) => item.id !== action.payload,
+        ),
+      };
+    case "GET_AUTHORIZED_PERSONS":
+      return {
+        ...state,
+        authorized_persons: action.payload,
+      };
+
+    case "GET_ID_AUTHORIZED_PERSON":
+      return {
+        ...state,
+        authorized_personDetail: action.payload,
+      };
+
+    case "POST_AUTHORIZED_PERSON":
+      return {
+        ...state,
+      };
+
+    case "UPDATE_AUTHORIZED_PERSON":
+      return {
+        ...state,
+        authorized_persons: state.authorized_persons.map((item) => {
+          return item.id === action.payload.id ? action.payload : item;
+        }),
+      };
+
+    case "DELETE_AUTHORIZED_PERSON":
+      return {
+        ...state,
+        authorized_persons: state.authorized_persons.filter(
+          (item) => item.id !== action.payload,
+        ),
+      };
+
+    case "GET_AUTHORIZED_PERSON_INFANT_LINKS":
+      return {
+        ...state,
+        authorized_person_infant_links: action.payload,
+      };
+
+    case "GET_ID_AUTHORIZED_PERSON_INFANT_LINK":
+      return {
+        ...state,
+        authorized_person_infant_linkDetail: action.payload,
+      };
+
+    case "POST_AUTHORIZED_PERSON_INFANT_LINK":
+      return {
+        ...state,
+      };
+
+    case "UPDATE_AUTHORIZED_PERSON_INFANT_LINK":
+      return {
+        ...state,
+        authorized_person_infant_links:
+          state.authorized_person_infant_links.map((item) => {
+            return item.id === action.payload.id ? action.payload : item;
+          }),
+      };
+
+    case "DELETE_AUTHORIZED_PERSON_INFANT_LINK":
+      return {
+        ...state,
+        authorized_person_infant_links:
+          state.authorized_person_infant_links.filter(
+            (item) => item.id !== action.payload,
+          ),
+      };
     default:
       return { ...state };
   }

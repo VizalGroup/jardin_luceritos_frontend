@@ -6,11 +6,13 @@ import {
   GetCharges,
   GetFamilyRelationships,
   GetInfants,
+  GetTariffs,
 } from "../../../redux/actions";
 import AddCharge from "./AddCharge";
 import GenerateQuotas from "./GenerateQuotas";
 import ChargesTable from "./ChargesTable";
 import BulkWhatsAppReminder from "./BulkWhatsAppReminder";
+import UpdateOverduePayments from "./UpdateOverduePayments";
 
 export default function Administration() {
   document.title = "Administración - Jardín Luceritos";
@@ -20,6 +22,7 @@ export default function Administration() {
     dispatch(GetInfants());
     dispatch(GetCharges());
     dispatch(GetFamilyRelationships());
+    dispatch(GetTariffs());
   }, [dispatch]);
 
   return (
@@ -30,6 +33,7 @@ export default function Administration() {
           <BackButton />
           <AddCharge />
           <GenerateQuotas />
+          <UpdateOverduePayments />
           <BulkWhatsAppReminder />
         </div>
         <ChargesTable />

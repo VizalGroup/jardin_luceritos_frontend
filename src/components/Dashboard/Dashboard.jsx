@@ -8,11 +8,14 @@ import {
   FaEnvelope,
   FaBookOpen,
   FaFileInvoiceDollar,
+  FaMoneyBillWave,
+  FaTruck,
+  FaAddressBook,
 } from "react-icons/fa";
 import NavBarDB from "./NavBarDB";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { canManageSystem, normalizeText, canAccessAdministration } from "../../utils";
+import { canManageSystem, normalizeText, canAccessAdministration, canAccessFinancialModules } from "../../utils";
 import {
   GetTariffs,
   GetUserDetail,
@@ -25,6 +28,7 @@ import {
   GetConversations,
   GetChatMessages,
   GetCharges,
+  GetMedicalDocuments,
 } from "../../redux/actions";
 import AddMySon from "./AddMySon";
 import MyChildren from "./MyChildren";
@@ -33,6 +37,7 @@ import ParentCommunication from "./ParentCommunication";
 import FloatingChatButton from "./Chat/FloatingChatButton";
 import DeclarePayment from "./DeclarePayment";
 import AttendanceSchedule from "./Infants/AttendanceSchedule";
+import BirthdayBanner from "./BirthdayBanner";
 import AddExtraHour from "./AddExtraHour";
 import DeclareCashReceived from "./DeclareCashReceived";
 import { selectActiveInfantsOrderedByLastName } from "../../redux/selectors";
@@ -98,6 +103,7 @@ export default function Dashboard() {
       dispatch(GetConversations());
       dispatch(GetChatMessages());
       dispatch(GetCharges());
+      dispatch(GetMedicalDocuments());
     }
   }, [authenticatedUser, dispatch, navigate]);
 
@@ -112,10 +118,23 @@ export default function Dashboard() {
           adminOnly: true,
         },
         {
+          key: "authorizedPersons",
+          path: "/autogestion/autorizados_a_retirar",
+          icon: FaAddressBook,
+          text: "Autorizados a Retirar",
+        },
+        {
           key: "communications",
           path: "/autogestion/comunicaciones",
           icon: FaEnvelope,
           text: "Comunicaciones",
+        },
+        {
+          key: "expenses",
+          path: "/autogestion/gastos",
+          icon: FaMoneyBillWave,
+          text: "Gastos",
+          financialOnly: true,
         },
         {
           key: "infants",
@@ -130,6 +149,13 @@ export default function Dashboard() {
           text: `Notas del Sistema ${import.meta.env.VITE_APP_VERSION}`,
         },
         {
+          key: "suppliers",
+          path: "/autogestion/proveedores",
+          icon: FaTruck,
+          text: "Proveedores",
+          financialOnly: true,
+        },
+        {
           key: "tariffs",
           path: "/autogestion/tarifas",
           icon: FaDollarSign,
@@ -142,12 +168,29 @@ export default function Dashboard() {
           text: "Usuarios",
         },
       ]
+    : isParent
+    ? [
+        {
+          key: "authorizedPersons",
+          path: "/autogestion/autorizados_a_retirar",
+          icon: FaAddressBook,
+          text: "Autorizados a Retirar",
+        },
+        {
+          key: "accountStatement",
+          path: "/autogestion/mi_estado_de_cuenta",
+          icon: FaFileInvoiceDollar,
+          text: "Mi Estado de Cuenta",
+        },
+      ]
     : [];
 
   const modules = allModules.filter(
     (m) =>
-      !m.adminOnly ||
-      canAccessAdministration(authenticatedUser?.user_role, authenticatedUser?.id)
+      (!m.adminOnly ||
+        canAccessAdministration(authenticatedUser?.user_role, authenticatedUser?.id)) &&
+      (!m.financialOnly ||
+        canAccessFinancialModules(authenticatedUser?.user_role))
   );
 
   if (!authenticatedUser) {
@@ -254,40 +297,44 @@ export default function Dashboard() {
               </>
             )}
 
-            {/* Módulo Estado de Cuenta */}
             <div className="admin-panel">
-              <div className="admin-button-container">
-                <a href="/autogestion/mi_estado_de_cuenta" className="module-link">
-                  <button
-                    className="btn btn-lg admin-button"
-                    style={{
-                      backgroundColor: "#213472",
-                      color: "#FFFFFF",
-                      border: "2px solid #213472",
-                      fontFamily:
-                        "georgia, palatino, 'book antiqua', 'palatino linotype', serif",
-                      fontWeight: "600",
-                      padding: "15px 30px",
-                      margin: "10px",
-                      transition: "all 0.3s ease",
-                      minWidth: "250px",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.transform = "translateY(-3px)";
-                      e.target.style.boxShadow = "0 8px 20px rgba(33, 52, 114, 0.4)";
-                      e.target.style.backgroundColor = "#1a2859";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform = "translateY(0)";
-                      e.target.style.boxShadow = "none";
-                      e.target.style.backgroundColor = "#213472";
-                    }}
-                  >
-                    <FaFileInvoiceDollar style={{ marginRight: "10px" }} />
-                    <span>Mi Estado de Cuenta</span>
-                  </button>
-                </a>
-              </div>
+              {modules.map((module) => {
+                const IconComponent = module.icon;
+                return (
+                  <div key={module.key} className="admin-button-container">
+                    <a href={module.path} className="module-link">
+                      <button
+                        className="btn btn-lg admin-button"
+                        style={{
+                          backgroundColor: "#213472",
+                          color: "#FFFFFF",
+                          border: "2px solid #213472",
+                          fontFamily:
+                            "georgia, palatino, 'book antiqua', 'palatino linotype', serif",
+                          fontWeight: "600",
+                          padding: "15px 30px",
+                          margin: "10px",
+                          transition: "all 0.3s ease",
+                          minWidth: "250px",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.transform = "translateY(-3px)";
+                          e.target.style.boxShadow = "0 8px 20px rgba(33, 52, 114, 0.4)";
+                          e.target.style.backgroundColor = "#1a2859";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = "translateY(0)";
+                          e.target.style.boxShadow = "none";
+                          e.target.style.backgroundColor = "#213472";
+                        }}
+                      >
+                        <IconComponent style={{ marginRight: "10px" }} />
+                        <span>{module.text}</span>
+                      </button>
+                    </a>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Carrusel de comunicados - solo si tiene hijos vinculados */}
@@ -347,6 +394,9 @@ export default function Dashboard() {
             <div style={{ marginTop: "60px" }}>
               <CommunicationBoard />
             </div>
+
+            {/* Banner de cumpleaños */}
+            <BirthdayBanner />
 
             {/* Cronograma de asistencia */}
             <SearchBar

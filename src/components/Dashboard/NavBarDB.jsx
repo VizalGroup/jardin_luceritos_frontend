@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { LogoutUser } from "../../redux/actions";
-import { canManageSystem, canAccessAdministration } from "../../utils";
+import { canManageSystem, canAccessAdministration, canAccessFinancialModules } from "../../utils";
 import {
   FaAddressCard,
+  FaAddressBook,
   FaDoorOpen,
   FaHome,
   FaStickyNote,
@@ -13,6 +14,8 @@ import {
   FaHistory,
   FaBookOpen,
   FaFileInvoiceDollar,
+  FaMoneyBillWave,
+  FaTruck,
 } from "react-icons/fa";
 
 export default function NavBarDB() {
@@ -21,7 +24,7 @@ export default function NavBarDB() {
 
   const handleLogout = () => {
     dispatch(LogoutUser());
-    window.location.href = "/";
+    window.location.href = "/iniciar_sesion";
   };
 
   // Verificar si el usuario puede gestionar el sistema
@@ -32,6 +35,11 @@ export default function NavBarDB() {
   const showAdministration =
     authenticatedUser &&
     canAccessAdministration(authenticatedUser.user_role, authenticatedUser.id);
+
+  // Verificar si puede ver módulos financieros (Gastos y Proveedores)
+  const showFinancialModules =
+    authenticatedUser &&
+    canAccessFinancialModules(authenticatedUser.user_role);
 
   // Verificar si es padre/madre/tutor
   const isParent = authenticatedUser?.user_role === 3;
@@ -94,6 +102,14 @@ export default function NavBarDB() {
                     <hr className="dropdown-divider" />
                   </li>
                   <li className="nav-item">
+                    <a className="nav-link" href="/autogestion/autorizados_a_retirar">
+                      <FaAddressBook /> Autorizados a Retirar
+                    </a>
+                  </li>
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
+                  <li className="nav-item">
                     <a className="nav-link" href="/autogestion/historial-comunicaciones">
                       <FaHistory /> Historial de Comunicaciones
                     </a>
@@ -128,6 +144,14 @@ export default function NavBarDB() {
                       </li>
                     </>
                   )}
+                  <li className="nav-item">
+                    <a className="nav-link" href="/autogestion/autorizados_a_retirar">
+                      <FaAddressBook /> Autorizados a Retirar
+                    </a>
+                  </li>
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
                      <li className="nav-item">
                       <a className="nav-link" href="/autogestion/comunicaciones">
                         <FaEnvelope /> Comunicaciones
@@ -136,6 +160,18 @@ export default function NavBarDB() {
                     <li>
                       <hr className="dropdown-divider" />
                     </li>
+                  {showFinancialModules && (
+                    <>
+                      <li className="nav-item">
+                        <a className="nav-link" href="/autogestion/gastos">
+                          <FaMoneyBillWave /> Gastos
+                        </a>
+                      </li>
+                      <li>
+                        <hr className="dropdown-divider" />
+                      </li>
+                    </>
+                  )}
                   <li className="nav-item">
                     <a className="nav-link" href="/autogestion/infantes">
                       <FaChild /> Infantes
@@ -161,6 +197,20 @@ export default function NavBarDB() {
                   <li>
                     <hr className="dropdown-divider" />
                   </li>
+
+                  {showFinancialModules && (
+                    <>
+                      <li className="nav-item">
+                        <a className="nav-link" href="/autogestion/proveedores">
+                          <FaTruck /> Proveedores
+                        </a>
+                      </li>
+                      <li>
+                        <hr className="dropdown-divider" />
+                      </li>
+                    </>
+                  )}
+
                   <li className="nav-item">
                     <a className="nav-link" href="/autogestion/usuarios">
                       <FaUserCog /> Usuarios

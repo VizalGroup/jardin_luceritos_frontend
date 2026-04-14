@@ -117,7 +117,7 @@ export default function AccountStatement() {
                         </small>
                       </td>
                       <td>
-                        {charge.charge_title}
+                        {capitalizeName(charge.charge_title)}
                         <br />
                         <small className="text-muted">
                           {capitalizeName(charge.infant?.lastname)},{" "}

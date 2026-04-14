@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { Card } from "react-bootstrap";
+import { Card, Badge } from "react-bootstrap";
 import { 
   FaChild, 
   FaBirthdayCake, 
@@ -13,9 +13,13 @@ import {
   FaSchool,
   FaMapMarkerAlt,
   FaFileInvoiceDollar,
+  FaFileMedical,
+  FaExclamationTriangle,
 } from "react-icons/fa";
 
-import { capitalizeName, formatDate, calculateAge, formatDNI, formatCurrency, getRoomName, getLocationName } from "../../utils";
+import { capitalizeName, formatDate, calculateAge, formatDNI, formatCurrency, getRoomName, getLocationName, getMedicalDocumentType } from "../../utils";
+import MedicalDocumentDetail from "./Infants/MedicalDocumentDetail";
+import AddMedicalDocument from "./Infants/AddMedicalDocument";
 import { selectPendingChargesOrderedById } from "../../redux/selectors";
 
 export default function MyChildren() {
@@ -25,6 +29,9 @@ export default function MyChildren() {
   console.log(familyLinks);
   
   const charges = useSelector(selectPendingChargesOrderedById);
+  const allDocs = useSelector((state) => state.medical_documents);
+
+  const REQUIRED_DOC_TYPES = [0, 1, 2];
 
   // Filtrar los hijos del usuario actual
   const myChildren = familyLinks
@@ -205,6 +212,77 @@ export default function MyChildren() {
                   </div>
                 )}
 
+                {/* Documentos médicos */}
+                {(() => {
+                  const infantDocs = allDocs.filter((doc) => doc.id_infant === child.id);
+                  const uploadedTypes = infantDocs.map((doc) => parseInt(doc.file_type));
+                  const missingTypes = REQUIRED_DOC_TYPES.filter((type) => !uploadedTypes.includes(type));
+                  if (infantDocs.length === 0 && missingTypes.length === 0) return null;
+                  return (
+                    <div className="col-12 mt-2">
+                      <div
+                        style={{
+                          padding: "10px 12px",
+                          borderRadius: "8px",
+                          backgroundColor: "#FFF5ED",
+                          border: "1px solid rgba(33,52,114,0.15)",
+                        }}
+                      >
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                          <div className="d-flex align-items-center gap-1">
+                            <FaFileMedical style={{ color: "#213472" }} size={12} />
+                            <small className="fw-semibold" style={{ color: "#213472" }}>Documentos médicos</small>
+                          </div>
+                          <AddMedicalDocument infant={child} />
+                        </div>
+
+                        {infantDocs.length > 0 ? (
+                          <ol style={{ margin: 0, paddingLeft: "1.2rem" }}>
+                            {[...infantDocs]
+                              .sort((a, b) => parseInt(a.file_type) - parseInt(b.file_type))
+                              .map((doc) => (
+                                <li key={doc.id}>
+                                  <MedicalDocumentDetail doc={doc} />
+                                </li>
+                              ))}
+                          </ol>
+                        ) : (
+                          <p style={{ fontSize: "0.85rem", color: "gray", margin: 0 }}>
+                            Sin documentos cargados.
+                          </p>
+                        )}
+
+                        {missingTypes.length > 0 && (
+                          <div style={{ marginTop: infantDocs.length > 0 ? "10px" : "6px" }}>
+                            <div
+                              style={{
+                                fontSize: "0.82rem",
+                                fontWeight: 600,
+                                color: "#b45309",
+                                marginBottom: "4px",
+                              }}
+                            >
+                              <FaExclamationTriangle className="me-1" /> Faltantes:
+                            </div>
+                            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                              {missingTypes.map((type) => (
+                                <Badge
+                                  key={type}
+                                  bg="light"
+                                  text="dark"
+                                  style={{ fontSize: "0.78rem" }}
+                                >
+                                  {getMedicalDocumentType(type)}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 {/* Cargos pendientes */}
                 {(() => {
                   const pendingCharges = charges.filter(
@@ -234,7 +312,7 @@ export default function MyChildren() {
                             }}
                           >
                             <div>
-                              <span className="fw-semibold text-dark">{charge.charge_title}</span>
+                              <span className="fw-semibold text-dark">{capitalizeName(charge.charge_title)}</span>
                               <br />
                               <span className="text-muted">Vence: {formatDate(charge.due_date)}</span>
                             </div>
@@ -270,12 +348,6 @@ export default function MyChildren() {
                 )}
               </div>
             </Card.Body>
-
-            {/* Botones de acciones comentados para futuras funcionalidades */}
-            {/* <Card.Footer className="d-flex justify-content-between">
-              <AddMedicalDocumentation infant={child} />
-              <DeclarePayment charges={[]} />
-            </Card.Footer> */}
           </Card>
         ))}
       </div>

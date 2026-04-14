@@ -24,13 +24,13 @@ export const selectAllTariffs = (state) => state.tariffs;
 //Tarifas, Exceptuando Hora extra y becados
 
 export const selectTariffs = createSelector([selectAllTariffs], (tariffs) =>
-  tariffs.filter((tariff) => tariff.number_of_hours > 1)
+  tariffs.filter((tariff) => tariff.number_of_hours > 1),
 );
 
 //Tarifas, Hora extra
 
 export const selectExtraHour = createSelector([selectAllTariffs], (tariffs) =>
-  tariffs.find((tariff) => tariff.id == 1)
+  tariffs.find((tariff) => tariff.id == 1),
 );
 
 // Selector para tarifas ordenadas por number_of_hours
@@ -38,8 +38,8 @@ export const selectTariffsOrderedByHours = createSelector(
   [selectAllTariffs],
   (tariffs) =>
     [...tariffs].sort(
-      (a, b) => parseFloat(a.number_of_hours) - parseFloat(b.number_of_hours)
-    )
+      (a, b) => parseFloat(a.number_of_hours) - parseFloat(b.number_of_hours),
+    ),
 );
 
 //Infantes
@@ -50,7 +50,7 @@ export const selectInfants = (state) => state.infants;
 
 export const selectActivateInfants = createSelector(
   [selectInfants],
-  (infants) => infants.filter((infant) => infant.current_state == 1)
+  (infants) => infants.filter((infant) => infant.current_state == 1),
 );
 
 // Selector para ordenar infantes por apellido y luego por nombre
@@ -62,7 +62,7 @@ export const selectInfantsOrderedByLastName = createSelector(
       return lastNameComparison !== 0
         ? lastNameComparison // Si los apellidos son distintos, ordena por apellido
         : a.first_name.localeCompare(b.first_name); // Si los apellidos son iguales, ordena por nombre
-    })
+    }),
 );
 
 // Selector para obtener infantes activos y ordenarlos por apellido y luego por nombre
@@ -74,7 +74,7 @@ export const selectActiveInfantsOrderedByLastName = createSelector(
       return lastNameComparison !== 0
         ? lastNameComparison // Si los apellidos son distintos, ordena por apellido
         : a.first_name.localeCompare(b.first_name); // Si los apellidos son iguales, ordena por nombre
-    })
+    }),
 );
 
 // Selector para infantes activos con tarifa mensual válida (excluye becados y hora extra)
@@ -86,14 +86,14 @@ export const selectActiveInfantsWithFixedFee = createSelector(
         (infant) =>
           infant.tariff &&
           parseFloat(infant.tariff.number_of_hours) > 1 &&
-          infant.schedule
+          infant.schedule,
       )
       .sort((a, b) => {
         const lastNameComparison = a.lastname.localeCompare(b.lastname);
         return lastNameComparison !== 0
           ? lastNameComparison
           : a.first_name.localeCompare(b.first_name);
-      })
+      }),
 );
 
 // Comunicaciones
@@ -103,8 +103,7 @@ export const selectCommunications = (state) => state.communications;
 // Selector para ordenar comunicaciones de ID más alto a más bajo
 export const selectCommunicationsOrderedById = createSelector(
   [selectCommunications],
-  (communications) =>
-    [...communications].sort((a, b) => b.id - a.id)
+  (communications) => [...communications].sort((a, b) => b.id - a.id),
 );
 
 // ===== NUEVOS SELECTORES PARA CHAT =====
@@ -124,15 +123,15 @@ export const selectUserConversations = createSelector(
   (conversations, userId) => {
     if (!userId) return [];
     return conversations.filter(
-      (conv) => conv.parent_id === userId || conv.staff_id === userId
+      (conv) => conv.parent_id === userId || conv.staff_id === userId,
     );
-  }
+  },
 );
 
 // Selector para IDs de conversaciones del usuario (Set para lookup rápido)
 export const selectUserConversationIds = createSelector(
   [selectUserConversations],
-  (userConversations) => new Set(userConversations.map((c) => c.id))
+  (userConversations) => new Set(userConversations.map((c) => c.id)),
 );
 
 // Selector para mensajes sin leer del usuario actual (solo en sus conversaciones)
@@ -144,15 +143,15 @@ export const selectUnreadMessages = createSelector(
       (msg) =>
         conversationIds.has(msg.conversation_id) &&
         msg.sender_id !== userId &&
-        !msg.read_at
+        !msg.read_at,
     );
-  }
+  },
 );
 
 // Selector para contar total de mensajes sin leer
 export const selectUnreadMessagesCount = createSelector(
   [selectUnreadMessages],
-  (unreadMessages) => unreadMessages.length
+  (unreadMessages) => unreadMessages.length,
 );
 
 // Selector para conversaciones con mensajes sin leer (solo si el usuario participa)
@@ -168,7 +167,7 @@ export const selectConversationsWithUnreadMessages = createSelector(
         (msg) =>
           msg.conversation_id === conv.id &&
           msg.sender_id !== currentUserId &&
-          !msg.read_at
+          !msg.read_at,
       ).length;
 
       if (unreadCount > 0) {
@@ -182,53 +181,109 @@ export const selectConversationsWithUnreadMessages = createSelector(
     });
 
     return conversationsWithUnread;
-  }
+  },
 );
 
 // Selector para IDs de usuarios con mensajes sin leer
 export const selectUsersWithUnreadMessages = createSelector(
   [selectConversationsWithUnreadMessages],
-  (conversationsWithUnread) => 
-    conversationsWithUnread.map((c) => c.otherUserId)
+  (conversationsWithUnread) =>
+    conversationsWithUnread.map((c) => c.otherUserId),
 );
 
 // Selector para obtener mensajes de una conversación específica (memoizado)
 export const selectMessagesByConversationId = createSelector(
-  [
-    selectChatMessages,
-    (state, conversationId) => conversationId
-  ],
+  [selectChatMessages, (state, conversationId) => conversationId],
   (messages, conversationId) => {
     if (!conversationId) return [];
     return messages.filter((msg) => msg.conversation_id === conversationId);
-  }
+  },
 );
 
 // Selector para contar mensajes sin leer de una conversación específica
 export const selectUnreadCountForConversation = createSelector(
-  [
-    selectMessagesByConversationId,
-    selectAuthenticatedUserId
-  ],
+  [selectMessagesByConversationId, selectAuthenticatedUserId],
   (messages, userId) => {
     if (!userId) return 0;
-    return messages.filter(
-      (msg) => msg.sender_id !== userId && !msg.read_at
-    ).length;
-  }
+    return messages.filter((msg) => msg.sender_id !== userId && !msg.read_at)
+      .length;
+  },
 );
 
 // Selector general de cargos y ordenados de ID más alto a más bajo
 
 export const selectCharges = (state) => state.charges;
 
+export const selectPendingCharges = createSelector([selectCharges], (charges) =>
+  charges.filter((charge) => charge.current_state == 0),
+);
+
 export const selectChargesOrderedById = createSelector(
   [selectCharges],
-  (charges) => [...charges].sort((a, b) => b.id - a.id)
+  (charges) => [...charges].sort((a, b) => b.id - a.id),
 );
 
 // Cargos ordenados por id con current_state 0 (pendientes)
 export const selectPendingChargesOrderedById = createSelector(
   [selectChargesOrderedById],
-  (charges) => charges.filter((c) => c.current_state === 0)
+  (charges) => charges.filter((c) => c.current_state === 0),
+);
+
+// Selector de Proveedores y selector de proveedor ordenado alfabeticamente (supplier_name)
+export const selectSuppliers = (state) => state.suppliers;
+
+export const selectSortedSuppliers = createSelector(
+  [selectSuppliers],
+  (suppliers) =>
+    [...suppliers].sort((a, b) =>
+      a.supplier_name.localeCompare(b.supplier_name),
+    ),
+);
+
+// Selector general de gastos y ordenados en id descendente
+export const selectExpenses = (state) => state.expenses;
+
+export const selectSortedExpenses = createSelector(
+  [selectExpenses],
+  (expenses) => [...expenses].sort((a, b) => b.id - a.id),
+);
+
+// Selector general de categorias de gastos y ordenados alfabeticamente
+export const selectExpenseCategories = (state) => state.expenseCategories;
+
+export const selectSortedExpenseCategories = createSelector(
+  [selectExpenseCategories],
+  (categories) =>
+    [...categories].sort((a, b) =>
+      a.category_name.localeCompare(b.category_name),
+    ),
+);
+
+// Selector general de personas autorizadas y Ordenados por apellido y nombre
+
+export const selectAuthorizedPersons = (state) => state.authorized_persons;
+
+export const selectAuthorizedPersonsOrderedByLastName = createSelector(
+  [selectAuthorizedPersons],
+  (authorizedPersons) =>
+    [...authorizedPersons].sort((a, b) => {
+      const lastNameComparison = a.lastname.localeCompare(b.lastname);
+      return lastNameComparison !== 0
+        ? lastNameComparison
+        : a.first_name.localeCompare(b.first_name);
+    }),
+);
+
+// Selector general para obtener los vinculos familiares ordenados alfabeticamente por nombre de los padres
+
+export const selectFamilyLinks = (state) => state.family_relationships;
+
+export const selectFamilyLinksOrderedByLastName = createSelector(
+  [selectFamilyLinks],
+  (familyLinks) =>
+    [...familyLinks].sort((a, b) => {
+      const parentA = a.user.user_last_name;
+      const parentB = b.user.user_last_name;
+      return parentA.localeCompare(parentB);
+    }),
 );

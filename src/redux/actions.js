@@ -61,6 +61,47 @@ export const POST_CHARGE = "POST_CHARGE";
 export const UPDATE_CHARGE = "UPDATE_CHARGE";
 export const DELETE_CHARGE = "DELETE_CHARGE";
 
+export const GET_EXPENSE_CATEGORIES = "GET_EXPENSE_CATEGORIES";
+export const GET_ID_EXPENSE_CATEGORY = "GET_ID_EXPENSE_CATEGORY";
+export const POST_EXPENSE_CATEGORY = "POST_EXPENSE_CATEGORY";
+export const UPDATE_EXPENSE_CATEGORY = "UPDATE_EXPENSE_CATEGORY";
+export const DELETE_EXPENSE_CATEGORY = "DELETE_EXPENSE_CATEGORY";
+
+export const GET_SUPPLIERS = "GET_SUPPLIERS";
+export const GET_ID_SUPPLIER = "GET_ID_SUPPLIER";
+export const POST_SUPPLIER = "POST_SUPPLIER";
+export const UPDATE_SUPPLIER = "UPDATE_SUPPLIER";
+export const DELETE_SUPPLIER = "DELETE_SUPPLIER";
+
+export const GET_EXPENSES = "GET_EXPENSES";
+export const GET_ID_EXPENSE = "GET_ID_EXPENSE";
+export const POST_EXPENSE = "POST_EXPENSE";
+export const UPDATE_EXPENSE = "UPDATE_EXPENSE";
+export const DELETE_EXPENSE = "DELETE_EXPENSE";
+
+export const GET_MEDICAL_DOCUMENTS = "GET_MEDICAL_DOCUMENTS";
+export const GET_ID_MEDICAL_DOCUMENT = "GET_ID_MEDICAL_DOCUMENT";
+export const POST_MEDICAL_DOCUMENT = "POST_MEDICAL_DOCUMENT";
+export const UPDATE_MEDICAL_DOCUMENT = "UPDATE_MEDICAL_DOCUMENT";
+export const DELETE_MEDICAL_DOCUMENT = "DELETE_MEDICAL_DOCUMENT";
+
+export const GET_AUTHORIZED_PERSONS = "GET_AUTHORIZED_PERSONS";
+export const GET_ID_AUTHORIZED_PERSON = "GET_ID_AUTHORIZED_PERSON";
+export const POST_AUTHORIZED_PERSON = "POST_AUTHORIZED_PERSON";
+export const UPDATE_AUTHORIZED_PERSON = "UPDATE_AUTHORIZED_PERSON";
+export const DELETE_AUTHORIZED_PERSON = "DELETE_AUTHORIZED_PERSON";
+
+export const GET_AUTHORIZED_PERSON_INFANT_LINKS =
+  "GET_AUTHORIZED_PERSON_INFANT_LINKS";
+export const GET_ID_AUTHORIZED_PERSON_INFANT_LINK =
+  "GET_ID_AUTHORIZED_PERSON_INFANT_LINK";
+export const POST_AUTHORIZED_PERSON_INFANT_LINK =
+  "POST_AUTHORIZED_PERSON_INFANT_LINK";
+export const UPDATE_AUTHORIZED_PERSON_INFANT_LINK =
+  "UPDATE_AUTHORIZED_PERSON_INFANT_LINK";
+export const DELETE_AUTHORIZED_PERSON_INFANT_LINK =
+  "DELETE_AUTHORIZED_PERSON_INFANT_LINK";
+
 // url base de la API
 const usersURL = import.meta.env.VITE_API_USERS_URL;
 const authUserURL = import.meta.env.VITE_API_AUTH_USERS_URL;
@@ -75,6 +116,13 @@ const communicationRecipientsURL = import.meta.env
 const conversationsURL = import.meta.env.VITE_API_CONVERSATIONS_URL;
 const chatMessagesURL = import.meta.env.VITE_API_CHAT_MESSAGES_URL;
 const chargesURL = import.meta.env.VITE_API_CHARGES_URL;
+const expenseCategoriesURL = import.meta.env.VITE_API_EXPENSE_CATEGORIES_URL;
+const suppliersURL = import.meta.env.VITE_API_SUPPLIERS_URL;
+const expensesURL = import.meta.env.VITE_API_EXPENSES_URL;
+const medicalDocumentsURL = import.meta.env.VITE_API_MEDICAL_DOCUMENTS_URL;
+const authorized_personsURL = import.meta.env.VITE_API_AUTHORIZED_PERSONS_URL;
+const authorized_person_infantsURL = import.meta.env
+  .VITE_API_AUTHORIZED_PERSON_INFANT_LINKS_URL;
 
 // actions de usuarios
 
@@ -1327,7 +1375,7 @@ export const PostCharge = (atributos) => {
 
 export const UpdateCharge = (id, atributos) => {
   console.log(atributos);
-  
+
   return async function (dispatch) {
     try {
       var f = new FormData();
@@ -1349,7 +1397,7 @@ export const UpdateCharge = (id, atributos) => {
           ? atributos.url_payment_document
           : "",
       );
-      
+
       var response = await axios.post(chargesURL, f, { params: { id: id } });
       console.log(response.data);
       return dispatch({
@@ -1375,6 +1423,662 @@ export const DeleteCharge = (id) => {
       });
     } catch (err) {
       alert("Error al eliminar cargo: ", err);
+    }
+  };
+};
+
+// Actions de Categorías de Gastos
+
+export const GetExpenseCategories = () => {
+  return async function (dispatch) {
+    try {
+      var response = await axios.get(expenseCategoriesURL);
+      if (response.data !== null) {
+        return dispatch({
+          type: GET_EXPENSE_CATEGORIES,
+          payload: response.data,
+        });
+      } else {
+        return dispatch({
+          type: GET_EXPENSE_CATEGORIES,
+          payload: [],
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const GetExpenseCategoryDetail = (id) => {
+  return async function (dispatch) {
+    try {
+      const response = await axios.get(`${expenseCategoriesURL}?id=${id}`);
+      if (response.data) {
+        return dispatch({
+          type: GET_ID_EXPENSE_CATEGORY,
+          payload: response.data,
+        });
+      } else {
+        return dispatch({
+          type: GET_ID_EXPENSE_CATEGORY,
+          payload: [],
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+export const PostExpenseCategory = (atributos) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "POST");
+      f.append("category_name", atributos.category_name);
+      f.append("aux_description", atributos.aux_description);
+      var response = await axios.post(expenseCategoriesURL, f);
+      console.log("Categoría de gasto creada en la ACTION: ", response.data);
+      return dispatch({
+        type: POST_EXPENSE_CATEGORY,
+        payload: response.data,
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const UpdateExpenseCategory = (id, atributos) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "PUT");
+      f.append("category_name", atributos.category_name);
+      f.append("aux_description", atributos.aux_description);
+      var response = await axios.post(expenseCategoriesURL, f, {
+        params: { id: id },
+      });
+      return dispatch({
+        type: UPDATE_EXPENSE_CATEGORY,
+        payload: response.data,
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const DeleteExpenseCategory = (id) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "DELETE");
+      var response = await axios.post(expenseCategoriesURL, f, {
+        params: { id: id },
+      });
+      return dispatch({
+        type: DELETE_EXPENSE_CATEGORY,
+        payload: response.id,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+// Actions de Proveedores
+
+export const GetSuppliers = () => {
+  return async function (dispatch) {
+    try {
+      var response = await axios.get(suppliersURL);
+      if (response.data !== null) {
+        return dispatch({
+          type: GET_SUPPLIERS,
+          payload: response.data,
+        });
+      } else {
+        return dispatch({
+          type: GET_SUPPLIERS,
+          payload: [],
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const GetSupplierDetail = (id) => {
+  return async function (dispatch) {
+    try {
+      const response = await axios.get(`${suppliersURL}?id=${id}`);
+      if (response.data) {
+        return dispatch({
+          type: GET_ID_SUPPLIER,
+          payload: response.data,
+        });
+      } else {
+        return dispatch({
+          type: GET_ID_SUPPLIER,
+          payload: [],
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+export const PostSupplier = (atributos) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "POST");
+      f.append("supplier_name", atributos.supplier_name);
+      f.append("supplier_address", atributos.supplier_address);
+      f.append("phone", atributos.phone !== null ? atributos.phone : "");
+      f.append("notes", atributos.notes);
+      f.append("iva_condition", atributos.iva_condition);
+      var response = await axios.post(suppliersURL, f);
+      console.log("Proveedor creado en la ACTION: ", response.data);
+      return dispatch({
+        type: POST_SUPPLIER,
+        payload: response.data,
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const UpdateSupplier = (id, atributos) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "PUT");
+      f.append("supplier_name", atributos.supplier_name);
+      f.append("supplier_address", atributos.supplier_address);
+      f.append("phone", atributos.phone !== null ? atributos.phone : "");
+      f.append("notes", atributos.notes);
+      f.append("iva_condition", atributos.iva_condition);
+      var response = await axios.post(suppliersURL, f, { params: { id: id } });
+      return dispatch({
+        type: UPDATE_SUPPLIER,
+        payload: response.data,
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const DeleteSupplier = (id) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "DELETE");
+      var response = await axios.post(suppliersURL, f, { params: { id: id } });
+      return dispatch({
+        type: DELETE_SUPPLIER,
+        payload: response.id,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+// Actions de Gastos
+
+export const GetExpenses = () => {
+  return async function (dispatch) {
+    try {
+      var response = await axios.get(expensesURL);
+      if (response.data !== null) {
+        return dispatch({
+          type: GET_EXPENSES,
+          payload: response.data,
+        });
+      } else {
+        return dispatch({
+          type: GET_EXPENSES,
+          payload: [],
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const GetExpenseDetail = (id) => {
+  return async function (dispatch) {
+    try {
+      const response = await axios.get(`${expensesURL}?id=${id}`);
+      if (response.data) {
+        return dispatch({
+          type: GET_ID_EXPENSE,
+          payload: response.data,
+        });
+      } else {
+        return dispatch({
+          type: GET_ID_EXPENSE,
+          payload: [],
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+export const PostExpense = (atributos) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "POST");
+      f.append("amount", atributos.amount);
+      f.append("created_at", atributos.created_at);
+      f.append("created_by", atributos.created_by);
+      f.append("current_state", atributos.current_state);
+      f.append("debt", atributos.debt !== null ? atributos.debt : "");
+      f.append("id_category", atributos.id_category);
+      f.append("id_supplier", atributos.id_supplier);
+      f.append("notes", atributos.notes);
+      f.append("payment_method", atributos.payment_method);
+      var response = await axios.post(expensesURL, f);
+      console.log("Gasto creado en la ACTION: ", response.data);
+      return dispatch({
+        type: POST_EXPENSE,
+        payload: response.data,
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const UpdateExpense = (id, atributos) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "PUT");
+      f.append("amount", atributos.amount);
+      f.append("created_at", atributos.created_at);
+      f.append("created_by", atributos.created_by);
+      f.append("current_state", atributos.current_state);
+      f.append("debt", atributos.debt !== null ? atributos.debt : "");
+      f.append("id_category", atributos.id_category);
+      f.append("id_supplier", atributos.id_supplier);
+      f.append("notes", atributos.notes);
+      f.append("payment_method", atributos.payment_method);
+      var response = await axios.post(expensesURL, f, { params: { id: id } });
+      console.log(response);
+
+      return dispatch({
+        type: UPDATE_EXPENSE,
+        payload: response.data,
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const DeleteExpense = (id) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "DELETE");
+      var response = await axios.post(expensesURL, f, { params: { id: id } });
+      return dispatch({
+        type: DELETE_EXPENSE,
+        payload: response.id,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+// Actions de Documentos Médicos
+
+export const GetMedicalDocuments = () => {
+  return async function (dispatch) {
+    try {
+      var response = await axios.get(medicalDocumentsURL);
+      if (response.data !== null) {
+        return dispatch({
+          type: GET_MEDICAL_DOCUMENTS,
+          payload: response.data,
+        });
+      } else {
+        return dispatch({
+          type: GET_MEDICAL_DOCUMENTS,
+          payload: [],
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const GetMedicalDocumentDetail = (id) => {
+  return async function (dispatch) {
+    try {
+      const response = await axios.get(`${medicalDocumentsURL}?id=${id}`);
+      if (response.data) {
+        return dispatch({
+          type: GET_ID_MEDICAL_DOCUMENT,
+          payload: response.data,
+        });
+      } else {
+        return dispatch({
+          type: GET_ID_MEDICAL_DOCUMENT,
+          payload: [],
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+export const PostMedicalDocument = (atributos) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "POST");
+      f.append("id_infant", atributos.id_infant);
+      f.append("file_url", atributos.file_url);
+      f.append("file_type", atributos.file_type);
+      f.append("uploaded_by", atributos.uploaded_by);
+      f.append("created_at", atributos.created_at);
+      f.append("updated_at", atributos.updated_at);
+      var response = await axios.post(medicalDocumentsURL, f);
+      console.log("Documento médico creado en la ACTION: ", response.data);
+      return dispatch({
+        type: POST_MEDICAL_DOCUMENT,
+        payload: response.data,
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const UpdateMedicalDocument = (id, atributos) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "PUT");
+      f.append("id_infant", atributos.id_infant);
+      f.append("file_url", atributos.file_url);
+      f.append("file_type", atributos.file_type);
+      f.append("uploaded_by", atributos.uploaded_by);
+      f.append("created_at", atributos.created_at);
+      f.append("updated_at", atributos.updated_at);
+      var response = await axios.post(medicalDocumentsURL, f, {
+        params: { id: id },
+      });
+      return dispatch({
+        type: UPDATE_MEDICAL_DOCUMENT,
+        payload: response.data,
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const DeleteMedicalDocument = (id) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "DELETE");
+      var response = await axios.post(medicalDocumentsURL, f, {
+        params: { id: id },
+      });
+      return dispatch({
+        type: DELETE_MEDICAL_DOCUMENT,
+        payload: response.id,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+
+// Actions de Personas Autorizadas
+
+export const GetAuthorizedPersons = () => {
+  return async function (dispatch) {
+    try {
+      var response = await axios.get(authorized_personsURL);
+      if (response.data !== null) {
+        return dispatch({
+          type: GET_AUTHORIZED_PERSONS,
+          payload: response.data,
+        });
+      } else {
+        return dispatch({
+          type: GET_AUTHORIZED_PERSONS,
+          payload: [],
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const GetAuthorizedPersonDetail = (id) => {
+  return async function (dispatch) {
+    try {
+      const response = await axios.get(`${authorized_personsURL}?id=${id}`);
+      if (response.data) {
+        return dispatch({
+          type: GET_ID_AUTHORIZED_PERSON,
+          payload: response.data,
+        });
+      } else {
+        return dispatch({
+          type: GET_ID_AUTHORIZED_PERSON,
+          payload: [],
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+export const PostAuthorizedPerson = (atributos) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "POST");
+      f.append("first_name", atributos.first_name);
+      f.append("lastname", atributos.lastname);
+      f.append("dni", atributos.dni);
+      f.append("url_img", atributos.url_img);
+      f.append("phone", atributos.phone);
+
+      var response = await axios.post(authorized_personsURL, f);
+      console.log("Autorizacion creada en la ACTION: ", response.data);
+      return dispatch({
+        type: POST_AUTHORIZED_PERSON,
+        payload: response.data,
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const UpdateAuthorizedPerson = (id, atributos) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "PUT");
+      f.append("first_name", atributos.first_name);
+      f.append("lastname", atributos.lastname);
+      f.append("dni", atributos.dni);
+      f.append("url_img", atributos.url_img);
+      f.append("phone", atributos.phone);
+      var response = await axios.post(authorized_personsURL, f, {
+        params: { id: id },
+      });
+      return dispatch({
+        type: UPDATE_AUTHORIZED_PERSON,
+        payload: response.data,
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const DeleteAuthorizedPerson = (id) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "DELETE");
+      var response = await axios.post(authorized_personsURL, f, {
+        params: { id: id },
+      });
+      return dispatch({
+        type: DELETE_AUTHORIZED_PERSON,
+        payload: response.id,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+// Actions de la tabla intermedia entre autorizados y niños
+
+export const GetAuthorizedPersonInfantsLinks = () => {
+  return async function (dispatch) {
+    try {
+      var response = await axios.get(authorized_person_infantsURL);
+      if (response.data !== null) {
+        return dispatch({
+          type: GET_AUTHORIZED_PERSON_INFANT_LINKS,
+          payload: response.data,
+        });
+      } else {
+        return dispatch({
+          type: GET_AUTHORIZED_PERSON_INFANT_LINKS,
+          payload: [],
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const GetAuthorizedPersonInfantLinkDetail = (id) => {
+  return async function (dispatch) {
+    try {
+      const response = await axios.get(
+        `${authorized_person_infantsURL}?id=${id}`,
+      );
+      if (response.data) {
+        return dispatch({
+          type: GET_ID_AUTHORIZED_PERSON_INFANT_LINK,
+          payload: response.data,
+        });
+      } else {
+        return dispatch({
+          type: GET_ID_AUTHORIZED_PERSON_INFANT_LINK,
+          payload: [],
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+export const PostAuthorizedPersonInfantLink = (atributos) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "POST");
+      f.append("id_infant", atributos.id_infant);
+      f.append("id_authorized_person", atributos.id_authorized_person);
+      var response = await axios.post(authorized_person_infantsURL, f);
+      console.log("Enlace creado en la ACTION: ", response.data);
+      return dispatch({
+        type: POST_AUTHORIZED_PERSON_INFANT_LINK,
+        payload: response.data,
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const UpdateAuthorizedPersonInfantLink = (id, atributos) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "PUT");
+      f.append("id_infant", atributos.id_infant);
+      f.append("id_authorized_person", atributos.id_authorized_person);
+      var response = await axios.post(authorized_person_infantsURL, f, {
+        params: { id: id },
+      });
+      return dispatch({
+        type: UPDATE_AUTHORIZED_PERSON_INFANT_LINK,
+        payload: response.data,
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+};
+
+export const DeleteAuthorizedPersonInfantLink = (id) => {
+  return async function (dispatch) {
+    try {
+      var f = new FormData();
+      f.append("METHOD", "DELETE");
+      var response = await axios.post(authorized_person_infantsURL, f, {
+        params: { id: id },
+      });
+      return dispatch({
+        type: DELETE_AUTHORIZED_PERSON_INFANT_LINK,
+        payload: response.id,
+      });
+    } catch (err) {
+      console.error(err);
     }
   };
 };

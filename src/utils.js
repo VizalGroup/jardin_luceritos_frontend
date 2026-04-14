@@ -44,7 +44,7 @@ export function formatCurrency(amount) {
   // Agrega puntos como separadores de miles.
   const integerWithThousandSeparator = integerPart.replace(
     /\B(?=(\d{3})+(?!\d))/g,
-    "."
+    ".",
   );
 
   // Devuelve el formato final con coma para los decimales.
@@ -111,7 +111,7 @@ export const getUserRoleName = (userRole) => {
     1: "Administrador",
     2: "Maestras y/o auxiliares",
     3: "Padres y/o tutores",
-    4: "Dirección", 
+    4: "Dirección",
   };
 
   return roles[userRole] || "Rol desconocido";
@@ -189,6 +189,13 @@ export const canEditUsers = (userRole) => {
   return role === 0 || role === 1 || role === 4;
 };
 
+// Función para verificar si puede acceder a módulos financieros (Gastos y Proveedores)
+// Solo roles 0 (Programador) y 1 (Administración/Dirección)
+export const canAccessFinancialModules = (userRole) => {
+  const role = parseInt(userRole);
+  return role === 0 || role === 1;
+};
+
 // Función para verificar si puede acceder al módulo de Administración
 // Permitido: roles 0 y 1, y excepcionalmente el usuario con id 5 (rol 4)
 export const canAccessAdministration = (userRole, userId) => {
@@ -221,7 +228,7 @@ export const getSessionTimeRemaining = (expiresAt) => {
 //Formulario Base para usuarios
 
 export const userFormData = {
-    first_name: "",
+  first_name: "",
   lastname: "",
   user_role: 3, // Por defecto padre, madre o tutor
   email: "",
@@ -331,10 +338,10 @@ export const isCommunicationVisibleForUser = (communication, userCreatedAt) => {
 
   // Convertir las fechas a objetos Date
   const userCreatedDate = new Date(userCreatedAt);
-  
+
   // Determinar la fecha efectiva del comunicado
   // Si tiene scheduled_for, usar esa; si no, usar created_at
-  const communicationDate = communication.scheduled_for 
+  const communicationDate = communication.scheduled_for
     ? new Date(communication.scheduled_for)
     : new Date(communication.created_at);
 
@@ -367,11 +374,13 @@ export const getTargetTypeInfo = (targetType) => {
     },
   };
 
-  return types[targetType] || {
-    name: "Tipo desconocido",
-    description: "",
-    icon: "FaQuestion",
-  };
+  return (
+    types[targetType] || {
+      name: "Tipo desconocido",
+      description: "",
+      icon: "FaQuestion",
+    }
+  );
 };
 
 // Función para obtener mensajes de una conversación específica
@@ -384,21 +393,29 @@ export const findExistingConversation = (conversations, userId1, userId2) => {
   return conversations.find(
     (conv) =>
       (conv.parent_id === userId1 && conv.staff_id === userId2) ||
-      (conv.parent_id === userId2 && conv.staff_id === userId1)
+      (conv.parent_id === userId2 && conv.staff_id === userId1),
   );
 };
 
 // Función para obtener mensajes sin leer de un usuario
-export const getUnreadMessagesFromUser = (allMessages, fromUserId, toUserId) => {
+export const getUnreadMessagesFromUser = (
+  allMessages,
+  fromUserId,
+  toUserId,
+) => {
   return allMessages.filter(
-    (msg) => msg.sender_id === fromUserId && !msg.read_at
+    (msg) => msg.sender_id === fromUserId && !msg.read_at,
   );
 };
 
 // Función para obtener conversaciones con mensajes sin leer
-export const getConversationsWithUnreadMessages = (conversations, messages, currentUserId) => {
+export const getConversationsWithUnreadMessages = (
+  conversations,
+  messages,
+  currentUserId,
+) => {
   const conversationsWithUnread = [];
-  
+
   conversations.forEach((conv) => {
     if (conv.parent_id !== currentUserId && conv.staff_id !== currentUserId) {
       return;
@@ -408,14 +425,15 @@ export const getConversationsWithUnreadMessages = (conversations, messages, curr
       (msg) =>
         msg.conversation_id === conv.id &&
         msg.sender_id !== currentUserId &&
-        !msg.read_at
+        !msg.read_at,
     ).length;
 
     if (unreadCount > 0) {
       conversationsWithUnread.push({
         conversation: conv,
         unreadCount,
-        otherUserId: conv.parent_id === currentUserId ? conv.staff_id : conv.parent_id,
+        otherUserId:
+          conv.parent_id === currentUserId ? conv.staff_id : conv.parent_id,
       });
     }
   });
@@ -471,7 +489,7 @@ export function SaveFileToDrive(e) {
       };
       fetch(
         "https://script.google.com/macros/s/AKfycbypMaiz-YpxDC7LvtmhFbf9-dYHMPBJVS0Vk6sdHtW9Y78xYniYJDi9jK3ta4q4Tx3L/exec",
-        { method: "POST", body: JSON.stringify(dataSend) }
+        { method: "POST", body: JSON.stringify(dataSend) },
       )
         .then((res) => res.json())
         .then((response) => {
@@ -509,15 +527,15 @@ export const isDateInRange = (dateString, fromDate, toDate) => {
 export const isOverdue = (dueDate, currentState) => {
   // Solo los cargos pendientes (current_state === 0) pueden estar vencidos
   if (currentState !== 0) return false;
-  
+
   if (!dueDate || dueDate === "0000-00-00") return false;
-  
+
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Normalizar a medianoche
-  
+
   const due = new Date(dueDate);
   due.setHours(0, 0, 0, 0); // Normalizar a medianoche
-  
+
   return due < today;
 };
 
@@ -548,3 +566,92 @@ export const generateDynamicTimeSlots = (children, currentDay) => {
 
   return sortedTimes;
 };
+
+//Formulario base de proveedores
+
+export const supplierFormData = {
+  supplier_name: "",
+  supplier_address: "",
+  phone: "",
+  notes: "",
+  iva_condition: "",
+};
+
+// Obtener condición de IVA
+
+export const getIvaCondition = (ivaCondition) => {
+  switch (ivaCondition) {
+    case 0:
+      return "Desconocida";
+    case 1:
+      return "Responsable Inscripto";
+    case 2:
+      return "Monotributista";
+    case 3:
+      return "Otro";
+    default:
+      return "Desconocida";
+  }
+};
+
+// Obtener método de pago para gastos
+export const getExpensePaymentMethod = (paymentMethod) => {
+  switch (paymentMethod) {
+    case 0:
+      return "Efectivo";
+    case 1:
+      return "Transferencia";
+    case 2:
+      return "Otro";
+    default:
+      return "Desconocido";
+  }
+};
+
+// Obtener estado actual del gasto
+export const getExpenseCurrentState = (currentState) => {
+  switch (currentState) {
+    case 0:
+      return "Pendiente de pago";
+    case 1:
+      return "Parcialmente pagado";
+    case 2:
+      return "Pagado";
+    default:
+      return "Desconocido";
+  }
+};
+
+// Obtener tipo de documento médico
+export const getMedicalDocumentType = (type) => {
+  switch (parseInt(type)) {
+    case 0:
+      return "Ficha médica";
+    case 1:
+      return "Carnet de vacunas";
+    case 2:
+      return "Credencial de obra social/prepaga";
+    case 3:
+      return "Otros";
+    default:
+      return "Desconocido";
+  }
+};
+
+//Formulario de autorizacion
+
+export const authorizationFormData = {
+  first_name: "",
+  lastname: "",
+  dni: "",
+  url_img: "",
+  id_infant: "",
+  phone: "",
+}
+
+// Formatear hora con minutos
+
+export function formatTime(timeString) {
+  const [hours, minutes] = timeString.split(":");
+  return `${hours}:${minutes}`;
+}

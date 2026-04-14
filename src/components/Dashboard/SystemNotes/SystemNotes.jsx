@@ -28,6 +28,80 @@ export default function SystemNotes() {
             <h2 className="system-notes-title">Registro de Actualizaciones</h2>
             <ul className="notes-timeline">
               <li className="timeline-item">
+                <span className="timeline-date">14 de Abril de 2026</span>
+                <ul className="timeline-updates">
+                  <li className="update-item">
+                    <strong>Actualización de Cuotas Vencidas:</strong> Nuevo
+                    componente en el módulo de Administración que permite
+                    actualizar en bloque las cuotas pendientes vencidas. Calcula
+                    el nuevo monto aplicando un recargo del 10% o 20% sobre la
+                    tarifa vigente del infante, establece una nueva fecha de
+                    vencimiento y registra el usuario autenticado como
+                    responsable de la actualización en lugar del usuario
+                    original del cargo. Incluye selección individual o masiva
+                    de cuotas, previsualización del nuevo importe y spinner de
+                    carga durante el proceso
+                  </li>
+                </ul>
+              </li>
+              <li className="timeline-item">
+                <span className="timeline-date">10 de Abril de 2026</span>
+                <ul className="timeline-updates">
+                  <li className="update-item">
+                    <strong>Módulo de Proveedores:</strong> Gestión completa del
+                    registro de proveedores del jardín. Permite agregar, editar
+                    y eliminar proveedores con datos de contacto (nombre,
+                    dirección, teléfono, notas) y condición fiscal (responsable
+                    inscripto, monotributista, etc.). Incluye búsqueda
+                    normalizada por nombre, teléfono o notas, paginación y
+                    validación de teléfono único. También se incorporó un modal
+                    reutilizable para crear proveedores directamente desde el
+                    formulario de gastos sin salir del flujo de trabajo
+                  </li>
+                  <li className="update-item">
+                    <strong>Módulo de Gastos:</strong> Control y seguimiento de
+                    los gastos del jardín con soporte para tres estados de pago:{" "}
+                    <em>Pendiente</em>, <em>Parcialmente pagado</em> y{" "}
+                    <em>Pagado</em>. Cada gasto se asocia a un proveedor, una
+                    categoría y un método de pago. El módulo incluye filtrado
+                    por estado con contador por categoría, búsqueda por
+                    proveedor, categoría, usuario o notas, y paginación.
+                    Complementado por un sub-módulo de{" "}
+                    <strong>Categorías de Gastos</strong> (CRUD completo con
+                    nombre y descripción auxiliar) y un sub-módulo de{" "}
+                    <strong>Estadísticas</strong> que agrupa los gastos por
+                    categoría en un rango de fechas seleccionable, mostrando
+                    totales pagados, pendientes y parciales junto con el
+                    comparativo de ingresos reales
+                  </li>
+                  <li className="update-item">
+                    <strong>Módulo de Personas Autorizadas a Retirar:</strong>{" "}
+                    Registro de personas autorizadas para retirar infantes del
+                    jardín. Soporta relaciones de muchos a muchos: una persona
+                    puede estar autorizada para varios infantes y un infante
+                    puede tener múltiples personas autorizadas. Los datos
+                    incluyen nombre, apellido, DNI/pasaporte, teléfono y foto
+                    (subida a Cloudinary). Los padres y tutores solo visualizan
+                    y gestionan personas vinculadas a sus propios hijos, mientras
+                    que el personal tiene acceso completo. La tabla incluye
+                    búsqueda por nombre, apellido, DNI o infantes a su cargo,
+                    paginación y visualización de foto en lightbox
+                  </li>
+                  <li className="update-item">
+                    <strong>Carga de Documentación Médica:</strong> Nueva
+                    funcionalidad en el módulo de infantes que permite subir
+                    documentos médicos (certificados de vacunación, carnet de
+                    salud, entre otros) para cada niño. Los archivos se alojan
+                    en Google Drive y se registra la URL en el sistema. Soporta
+                    tres tipos de documentos por infante, con validación de
+                    duplicados: si un tipo ya fue cargado, el selector lo
+                    indica y sugiere editar el existente en lugar de crear un
+                    nuevo registro. La interfaz incluye barra de progreso de
+                    subida y cierre automático al completarse exitosamente
+                  </li>
+                </ul>
+              </li>
+              <li className="timeline-item">
                 <span className="timeline-date">11 de Marzo de 2026</span>
                 <ul className="timeline-updates">
                   <li className="update-item">

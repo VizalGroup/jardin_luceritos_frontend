@@ -19,6 +19,11 @@ import CommunicationHistory from "./components/Dashboard/Communications/Communic
 import Chats from "./components/Dashboard/Communications/Chats/Chats";
 import Administration from "./components/Dashboard/Administration/Administration";
 import AccountStatement from "./components/Dashboard/AccountStatement/AccountStatement";
+import Expenses from "./components/Dashboard/Expenses/Expenses";
+import Suppliers from "./components/Dashboard/Suppliers/Suppliers";
+import ExpenseCategories from "./components/Dashboard/Expenses/ExpensesCategories/ExpensesCategories";
+import Statistics from "./components/Dashboard/Expenses/Statistics/Statistics";
+import AuthorizedPersons from "./components/Dashboard/AuthorizedPersons/AuthorizedPersons";
 
 function App() {
   return (
@@ -43,6 +48,15 @@ function App() {
       <Route path="/autogestion/historial-comunicaciones" element={<CommunicationHistory />} />
       <Route path="/autogestion/administracion" element={<Administration />} />
       <Route path="/autogestion/mi_estado_de_cuenta" element={<AccountStatement />} />
+      <Route path="/autogestion/gastos" element={<Expenses />} />
+      <Route path="/autogestion/proveedores" element={<Suppliers />} />
+      <Route path="/autogestion/gastos/categorias" element={<ExpenseCategories />} />
+      <Route path="/autogestion/gastos/estadisticas" element={<Statistics />} />
+       <Route
+          stric
+          path="/autogestion/autorizados_a_retirar"
+          element={<AuthorizedPersons />}
+        />
      </Routes>
     </>
   )
