@@ -7,7 +7,7 @@ import {
   GetCommunicationRecipients,
 } from "../../../redux/actions";
 import { Form, Button, Modal, Row, Col, Alert, Spinner } from "react-bootstrap";
-import { FaPlus, FaEnvelope, FaEdit, FaUsers, FaMapMarkerAlt, FaSchool, FaClock, FaImage } from "react-icons/fa";
+import { FaPlus, FaEnvelope, FaEdit, FaUsers, FaMapMarkerAlt, FaSchool, FaClock, FaImage, FaThumbtack } from "react-icons/fa";
 import { getCurrentDateTime, sanitizeText, uploadImageToCloudinary } from "../../../utils";
 
 export default function AddCommunication() {
@@ -22,6 +22,7 @@ export default function AddCommunication() {
     target_location: "",
     target_room: "",
     scheduled_for: "",
+    is_pinned: 0,
   });
   
   const [showSuccess, setShowSuccess] = useState(false);
@@ -54,6 +55,8 @@ export default function AddCommunication() {
           setUploadProgress(0);
         }
       }
+    } else if (name === "is_pinned") {
+      setFormData({ ...formData, is_pinned: e.target.checked ? 1 : 0 });
     } else {
       setFormData({ ...formData, [name]: value });
 
@@ -123,6 +126,7 @@ export default function AddCommunication() {
         target_location: "",
         target_room: "",
         scheduled_for: "",
+        is_pinned: 0,
       });
       
       setPictureUrl(null);
@@ -282,6 +286,34 @@ export default function AddCommunication() {
               <Form.Text className="text-muted">
                 Dejar vacío para enviar inmediatamente
               </Form.Text>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="is_pinned">
+              <div
+                onClick={() => setFormData({ ...formData, is_pinned: formData.is_pinned === 1 ? 0 : 1 })}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  cursor: "pointer",
+                  userSelect: "none",
+                  padding: "6px 14px",
+                  borderRadius: "20px",
+                  border: `2px solid ${formData.is_pinned === 1 ? "#213472" : "#ced4da"}`,
+                  backgroundColor: formData.is_pinned === 1 ? "#213472" : "#f8f9fa",
+                  color: formData.is_pinned === 1 ? "#fff" : "#6c757d",
+                  fontWeight: "600",
+                  fontSize: "0.9rem",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <FaThumbtack
+                  size={14}
+                  style={{ transform: formData.is_pinned === 1 ? "rotate(0deg)" : "rotate(45deg)", transition: "transform 0.2s ease" }}
+                />
+                {formData.is_pinned === 1 ? "Mensaje fijado" : "Fijar este mensaje"}
+              </div>
+              <input type="hidden" name="is_pinned" value={formData.is_pinned} />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="url_img">

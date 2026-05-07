@@ -10,6 +10,7 @@ import {
   FaUser,
   FaCalendarPlus,
   FaCheckCircle,
+  FaThumbtack,
 } from "react-icons/fa";
 import Pagination from "../../Pagination";
 import SearchBar from "../../SearchBar";
@@ -230,7 +231,29 @@ export default function CommunicationsTable({ communications }) {
 
               return (
                 <tr key={comm.id}>
-                  <td style={{ fontWeight: "600" }}>#{comm.id}</td>
+                  <td style={{ fontWeight: "600" }}>
+                    #{comm.id}
+                    {parseInt(comm.is_pinned) === 1 && (
+                      <div style={{ marginTop: "4px" }}>
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "3px",
+                            backgroundColor: "#213472",
+                            color: "#fff",
+                            borderRadius: "10px",
+                            padding: "2px 7px",
+                            fontSize: "0.7rem",
+                            fontWeight: "700",
+                          }}
+                        >
+                          <FaThumbtack size={10} />
+                          Fijado
+                        </span>
+                      </div>
+                    )}
+                  </td>
                   <td>
                     <div style={{ fontWeight: "600", color: "#213472" }}>
                       {comm.message_title || (

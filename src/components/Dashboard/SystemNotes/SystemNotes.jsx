@@ -28,6 +28,26 @@ export default function SystemNotes() {
             <h2 className="system-notes-title">Registro de Actualizaciones</h2>
             <ul className="notes-timeline">
               <li className="timeline-item">
+                <span className="timeline-date">6 de Mayo de 2026</span>
+                <ul className="timeline-updates">
+                  <li className="update-item">
+                    <strong>Mensajes Fijados en Comunicaciones:</strong> Los
+                    comunicados ahora pueden marcarse como fijados mediante la
+                    propiedad <code>is_pinned</code>. En el formulario de
+                    creación y edición se incorporó un toggle visual en forma de
+                    pastilla que indica el estado del pin con animación. En la
+                    pizarra de comunicaciones, los mensajes fijados se muestran
+                    con una etiqueta "Fijado" en el encabezado. Cuando el usuario
+                    ya está al día con sus lecturas, los comunicados fijados
+                    se presentan en un carrusel propio debajo del botón "Ver
+                    Historial de Comunicaciones", manteniéndose visibles aunque
+                    ya hayan sido leídos. En la tabla de comunicaciones, los
+                    mensajes fijados muestran una pastilla indicadora bajo el ID
+                    del comunicado
+                  </li>
+                </ul>
+              </li>
+              <li className="timeline-item">
                 <span className="timeline-date">14 de Abril de 2026</span>
                 <ul className="timeline-updates">
                   <li className="update-item">

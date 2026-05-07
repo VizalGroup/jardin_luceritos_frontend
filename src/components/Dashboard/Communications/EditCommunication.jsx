@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Button, Modal, Form, Row, Col, Alert, Spinner } from "react-bootstrap";
-import { FaEdit, FaEnvelope, FaClock, FaMapMarkerAlt, FaSchool, FaUser, FaImage } from "react-icons/fa";
+import { FaEdit, FaEnvelope, FaClock, FaMapMarkerAlt, FaSchool, FaUser, FaImage, FaThumbtack } from "react-icons/fa";
 import {
   UpdateCommunication,
   GetCommunications,
@@ -26,12 +26,16 @@ export default function EditCommunication({ communication }) {
     target_location: communication.target_location || "",
     target_room: communication.target_room || "",
     scheduled_for: communication.scheduled_for || "",
+    is_pinned: communication.is_pinned ?? 0,
   });
 
   const handleInputChange = async (e) => {
     const { name, value, files } = e.target;
     
-    if (name === "url_img") {
+    if (name === "is_pinned") {
+      setFormData({ ...formData, is_pinned: e.target.checked ? 1 : 0 });
+      return;
+    } else if (name === "url_img") {
       const file = files[0];
       if (file) {
         try {
@@ -102,6 +106,7 @@ export default function EditCommunication({ communication }) {
         target_room: parseInt(formData.target_type) === 1 ? formData.target_room : "",
         scheduled_for: formData.scheduled_for || null,
         url_img: pictureUrl || null,
+        is_pinned: formData.is_pinned,
         updated_at: currentDateTime,
       };
 
@@ -138,6 +143,7 @@ export default function EditCommunication({ communication }) {
       target_location: communication.target_location || "",
       target_room: communication.target_room || "",
       scheduled_for: communication.scheduled_for || "",
+      is_pinned: communication.is_pinned ?? 0,
     });
   };
 
@@ -280,6 +286,35 @@ export default function EditCommunication({ communication }) {
               <Form.Text className="text-muted">
                 Dejar vacío para enviar inmediatamente
               </Form.Text>
+            </Form.Group>
+
+            {/* Fijar mensaje */}
+            <Form.Group className="mb-3" controlId="is_pinned">
+              <div
+                onClick={() => setFormData({ ...formData, is_pinned: formData.is_pinned === 1 ? 0 : 1 })}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  cursor: "pointer",
+                  userSelect: "none",
+                  padding: "6px 14px",
+                  borderRadius: "20px",
+                  border: `2px solid ${formData.is_pinned === 1 ? "#213472" : "#ced4da"}`,
+                  backgroundColor: formData.is_pinned === 1 ? "#213472" : "#f8f9fa",
+                  color: formData.is_pinned === 1 ? "#fff" : "#6c757d",
+                  fontWeight: "600",
+                  fontSize: "0.9rem",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <FaThumbtack
+                  size={14}
+                  style={{ transform: formData.is_pinned === 1 ? "rotate(0deg)" : "rotate(45deg)", transition: "transform 0.2s ease" }}
+                />
+                {formData.is_pinned === 1 ? "Mensaje fijado" : "Fijar este mensaje"}
+              </div>
+              <input type="hidden" name="is_pinned" value={formData.is_pinned} />
             </Form.Group>
 
             {/* Imagen adjunta */}

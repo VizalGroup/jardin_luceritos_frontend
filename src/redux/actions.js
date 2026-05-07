@@ -867,6 +867,7 @@ export const PostCommunication = (atributos) => {
       f.append("updated_at", atributos.updated_at);
       f.append("scheduled_for", atributos.scheduled_for || "");
       f.append("url_img", atributos.url_img || "");
+      f.append("is_pinned", atributos.is_pinned);
 
       console.log("📤 Enviando comunicación con:");
       console.log("   Target Type:", atributos.target_type);
@@ -912,6 +913,8 @@ export const UpdateCommunication = (id, atributos) => {
       f.append("updated_at", atributos.updated_at);
       f.append("scheduled_for", atributos.scheduled_for || "");
       f.append("url_img", atributos.url_img || "");
+      f.append("is_pinned", atributos.is_pinned);
+
       var response = await axios.post(communicationsURL, f, {
         params: { id: id },
       });
@@ -1864,7 +1867,6 @@ export const DeleteMedicalDocument = (id) => {
     }
   };
 };
-
 
 // Actions de Personas Autorizadas
 

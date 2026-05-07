@@ -34,6 +34,7 @@ export default function ParentCommunication() {
     target_type: "2", // Tipo 2: Personal del jardín
     target_location: "",
     target_room: "", // Vacío, no pueden elegir sala
+    is_pinned: 0,
   });
   
   const [showSuccess, setShowSuccess] = useState(false);
@@ -92,6 +93,7 @@ export default function ParentCommunication() {
         target_type: "2",
         target_location: "",
         target_room: "",
+        is_pinned: 0,
       });
       
       setShowSuccess(true);
